@@ -23,10 +23,11 @@
 #include <string.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <sys/wait.h>
+#include <sys/time.h>
 #include <netinet/in.h>
 #include <netdb.h>
 #include <arpa/inet.h>
-#include <sys/wait.h>
 #include <signal.h>
 #include <dirent.h>
 #include <fcntl.h>
@@ -42,6 +43,15 @@
 
 #define BUFFER_SIZE 1024
 #define UDP_PACKET_SIZE 1024
+
+#define KEY_EVENT 'k'
+#define REL_EVENT 'r'
+#define ABS_EVENT 'a'
+#define SCROLL_EVENT 's'
+
+#define KEYBOARD_KEY 'k'
+#define MOUSE_KEY 'm'
+#define GAMEPAD_KEY 'g'
 
 int _sockfd, _newfd;
 struct addrinfo hints, *servinfo, *p;
@@ -60,6 +70,9 @@ clientList *_clientList;
 void sigchld_handler(int s);
 void* get_in_addr(struct sockaddr *sa);
 
+void handleWireless();
+void handleBlutooth();
+
 int serverSend(client* c, const void* msg, int len, unsigned int flags);
 int serverReceive(client* c, void* buf, int len, unsigned int flags);
 
@@ -67,7 +80,7 @@ int processCommandLineArgs(int argc, char* argv[]);
 
 void handleClient_select();
 
-int _keyCode, _x, _y, _scroll;
+int _eventFd, _x, _y, _scroll;
 char *_tokenP;
 
 #endif

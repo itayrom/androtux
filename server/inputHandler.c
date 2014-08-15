@@ -18,148 +18,209 @@
 
 #include "inputHandler.h"
 
+static int setupKeyboard(client *client);
+static int setupMouse(client *client);
+static int setupGamepad(client *client);
+
 static int devIdCount = 0;
 
 int setup_uinput_device(client *client) {
-	int i = 0;
-	char devName[DEVICE_NAME_SIZE];
-	
-	if (!(client->uinpFd = open("/dev/uinput", O_WRONLY, O_NDELAY))) {
-		printf("Unable to open /dev/uinput.\n");
-		return 0;
-	}
-	
-	memset(&client->uinp, 0, sizeof(client->uinp));
-
-	client->devId = devIdCount;
-	sprintf(devName, "AndroTux%d\n", devIdCount++);
-	printf("Device name: %s\n", devName);	
-	strncpy(client->uinp.name, devName, UINPUT_MAX_NAME_SIZE);
-	client->uinp.id.version = 4;
-	client->uinp.id.bustype = BUS_USB;
-	
-	ioctl(client->uinpFd, UI_SET_EVBIT, EV_KEY);
-	ioctl(client->uinpFd, UI_SET_EVBIT, EV_REL);
-	ioctl(client->uinpFd, UI_SET_EVBIT, EV_ABS);
-	ioctl(client->uinpFd, UI_SET_EVBIT, EV_SYN);
-
-	ioctl(client->uinpFd, UI_SET_RELBIT, REL_X);
-	ioctl(client->uinpFd, UI_SET_RELBIT, REL_Y);
-	ioctl(client->uinpFd, UI_SET_RELBIT, REL_WHEEL);
-	
-	for (i = 0; i < KEY_MAX; i++) {
-		ioctl(client->uinpFd, UI_SET_KEYBIT, i);
-	}
-
-	client->uinp.absmin[ABS_X] = 0;
-	client->uinp.absmax[ABS_X] = 1023;
-	client->uinp.absmin[ABS_Y] = 0;
-	client->uinp.absmax[ABS_Y] = 1023;
-
-	ioctl(client->uinpFd, UI_SET_KEYBIT, BTN_MOUSE);
-	ioctl(client->uinpFd, UI_SET_KEYBIT, BTN_TOUCH);
-	
-	ioctl(client->uinpFd, UI_SET_KEYBIT, BTN_LEFT);
-	ioctl(client->uinpFd, UI_SET_KEYBIT, BTN_MIDDLE);
-	ioctl(client->uinpFd, UI_SET_KEYBIT, BTN_RIGHT);
-	ioctl(client->uinpFd, UI_SET_KEYBIT, BTN_FORWARD);
-	ioctl(client->uinpFd, UI_SET_KEYBIT, BTN_BACK);
-	
-	ioctl(client->uinpFd, UI_SET_ABSBIT, ABS_X);
-	ioctl(client->uinpFd, UI_SET_ABSBIT, ABS_Y);
-
-	if (write(client->uinpFd, &(client->uinp), sizeof(client->uinp)) < 0) {
-		perror ("error: write");
-		return 0;
-	}
-	
-	if (ioctl(client->uinpFd, UI_DEV_CREATE)) {
-		printf("Unable to create uinput device.\n");
-		return 0;
-	}
+	setupKeyboard(client);
+	setupMouse(client);
+	setupGamepad(client);
+	devIdCount++;
 	
 	return 1;
 }
 
+static int setupKeyboard(client *client) {
+	int i;
+	char devName[DEVICE_NAME_SIZE];
+	
+	if (!(client->kbFd = open("/dev/uinput", O_WRONLY, O_NDELAY))) {
+		printf("Unable to open /dev/uinput.\n");
+		return 0;
+	}
+	
+	memset(&client->kbDev, 0, sizeof(client->kbDev));
+
+	client->devId = devIdCount;
+	sprintf(devName, "AndroTux%d[Keyboard]\n", devIdCount);
+	printf("Device name: %s\n", devName);	
+	strncpy(client->kbDev.name, devName, UINPUT_MAX_NAME_SIZE);
+	client->kbDev.id.bustype = BUS_USB;
+	client->kbDev.id.vendor = 0;
+	client->kbDev.id.product = 0;
+	client->kbDev.id.version = 0;
+
+	// ioctl(client->uinpFd, UI_SET_EVBIT, EV_SYN);
+
+	ioctl(client->kbFd, UI_SET_EVBIT, EV_KEY);
+	
+	for (i = 0; i < 256 ; i++) {
+		ioctl(client->kbFd, UI_SET_KEYBIT, i);
+	}
+
+	if (write(client->kbFd, &(client->kbDev), sizeof(client->kbDev)) < 0) {
+		perror ("error: write");
+		return 0;
+	}
+	
+	if (ioctl(client->kbFd, UI_DEV_CREATE)) {
+		printf("Unable to create uinput device.\n");
+		return 0;
+	}
+}
+
+static int setupMouse(client *client) {
+	char devName[DEVICE_NAME_SIZE];
+	
+	if (!(client->mFd = open("/dev/uinput", O_WRONLY, O_NDELAY))) {
+		printf("Unable to open /dev/uinput.\n");
+		return 0;
+	}
+	
+	memset(&client->mDev, 0, sizeof(client->mDev));
+
+	client->devId = devIdCount;
+	sprintf(devName, "AndroTux%d[Mouse]\n", devIdCount);
+	printf("Device name: %s\n", devName);	
+	strncpy(client->mDev.name, devName, UINPUT_MAX_NAME_SIZE);
+	client->mDev.id.bustype = BUS_USB;
+	client->mDev.id.vendor = 0;
+	client->mDev.id.product = 1;
+	client->mDev.id.version = 0;
+
+	// ioctl(client->mFd, UI_SET_EVBIT, EV_SYN);
+
+	ioctl(client->mFd, UI_SET_EVBIT, EV_REL);
+	ioctl(client->mFd, UI_SET_EVBIT, EV_KEY);
+	
+	ioctl(client->mFd, UI_SET_RELBIT, REL_X);
+	ioctl(client->mFd, UI_SET_RELBIT, REL_Y);
+	ioctl(client->mFd, UI_SET_RELBIT, REL_WHEEL);
+
+	ioctl(client->mFd, UI_SET_KEYBIT, BTN_MOUSE);
+	ioctl(client->mFd, UI_SET_KEYBIT, BTN_TOUCH);
+	
+	ioctl(client->mFd, UI_SET_KEYBIT, BTN_LEFT);
+	ioctl(client->mFd, UI_SET_KEYBIT, BTN_MIDDLE);
+	ioctl(client->mFd, UI_SET_KEYBIT, BTN_RIGHT);
+	ioctl(client->mFd, UI_SET_KEYBIT, BTN_FORWARD);
+	ioctl(client->mFd, UI_SET_KEYBIT, BTN_BACK);
+
+	if (write(client->mFd, &(client->mDev), sizeof(client->mDev)) < 0) {
+		perror ("error: write");
+		return 0;
+	}
+	
+	if (ioctl(client->mFd, UI_DEV_CREATE)) {
+		printf("Unable to create uinput device.\n");
+		return 0;
+	}
+}
+
+static int setupGamepad(client *client) {
+	char devName[DEVICE_NAME_SIZE];
+	
+	if (!(client->gpFd = open("/dev/uinput", O_WRONLY, O_NDELAY))) {
+		printf("Unable to open /dev/uinput.\n");
+		return 0;
+	}
+	
+	memset(&client->gpDev, 0, sizeof(client->mDev));
+
+	client->devId = devIdCount;
+	sprintf(devName, "AndroTux%d[Gamepad]\n", devIdCount);
+	printf("Device name: %s\n", devName);	
+	strncpy(client->gpDev.name, devName, UINPUT_MAX_NAME_SIZE);
+	client->gpDev.id.bustype = BUS_USB;
+	client->gpDev.id.vendor = 0;
+	client->gpDev.id.product = 2;
+	client->gpDev.id.version = 0;
+
+	// ioctl(client->gpFd, UI_SET_EVBIT, EV_SYN);
+
+	ioctl(client->gpFd, UI_SET_EVBIT, EV_ABS);
+	ioctl(client->gpFd, UI_SET_EVBIT, EV_KEY);
+	
+	ioctl(client->gpFd, UI_SET_ABSBIT, ABS_X);
+	ioctl(client->gpFd, UI_SET_ABSBIT, ABS_Y);
+
+	client->gpDev.absmin[ABS_X] = -1023;
+	client->gpDev.absmax[ABS_X] = 1023;
+	client->gpDev.absfuzz[ABS_X] = 0;
+	client->gpDev.absflat[ABS_X] = 0;
+
+	client->gpDev.absmin[ABS_Y] = -1023;
+	client->gpDev.absmax[ABS_Y] = 1023;
+	client->gpDev.absfuzz[ABS_Y] = 0;
+	client->gpDev.absflat[ABS_Y] = 0;
+
+	ioctl(client->gpFd, UI_SET_KEYBIT, BTN_GAMEPAD);
+	ioctl(client->gpFd, UI_SET_KEYBIT, BTN_A);
+	ioctl(client->gpFd, UI_SET_KEYBIT, BTN_B);
+	ioctl(client->gpFd, UI_SET_KEYBIT, BTN_C);
+	ioctl(client->gpFd, UI_SET_KEYBIT, BTN_X);
+	ioctl(client->gpFd, UI_SET_KEYBIT, BTN_Y);
+	ioctl(client->gpFd, UI_SET_KEYBIT, BTN_Z);
+	ioctl(client->gpFd, UI_SET_KEYBIT, BTN_TL);
+	ioctl(client->gpFd, UI_SET_KEYBIT, BTN_TR);
+	ioctl(client->gpFd, UI_SET_KEYBIT, BTN_TL2);
+	ioctl(client->gpFd, UI_SET_KEYBIT, BTN_TR2);
+	ioctl(client->gpFd, UI_SET_KEYBIT, BTN_SELECT);
+	ioctl(client->gpFd, UI_SET_KEYBIT, BTN_START);
+	ioctl(client->gpFd, UI_SET_KEYBIT, BTN_MODE);
+	ioctl(client->gpFd, UI_SET_KEYBIT, BTN_THUMBL);
+	ioctl(client->gpFd, UI_SET_KEYBIT, BTN_THUMBR);
+
+	if (write(client->gpFd, &(client->gpDev), sizeof(client->gpDev)) < 0) {
+		perror ("error: write");
+		return 0;
+	}
+	
+	if (ioctl(client->gpFd, UI_DEV_CREATE)) {
+		printf("Unable to create uinput device.\n");
+		return 0;
+	}
+}
+
 void close_uinput_device(client *client) {
-	ioctl(client->uinpFd, UI_DEV_DESTROY);
-	close(client->uinpFd);
+	if (client->kbFd > -1) {
+		ioctl(client->kbFd, UI_DEV_DESTROY);
+		close(client->kbFd);
+	}
+	
+	if (client->mFd > -1) {
+		ioctl(client->mFd, UI_DEV_DESTROY);
+		close(client->mFd);
+	}
+
+	if (client->gpFd > -1) {
+		ioctl(client->gpFd, UI_DEV_DESTROY);
+		close(client->gpFd);
+	}
 }
 
-void press_key(client *client, int key) {
-	// key pressed
-	memset(&(client->event), 0, sizeof(client->event));
-	gettimeofday(&client->event.time, NULL);
-	client->event.type = EV_KEY;
-	client->event.code = key;
-	client->event.value = 1;
-	write(client->uinpFd, &client->event, sizeof(client->event));
-	
-	client->event.type = EV_SYN;
-	client->event.code = SYN_REPORT;
-	client->event.value = 0;
-	write(client->uinpFd, &(client->event), sizeof(client->event));
-	
-	// key released
-	memset(&client->event, 0, sizeof(client->event));
-	gettimeofday(&client->event.time, NULL);
-	client->event.type = EV_KEY;
-	client->event.code = key;
-	client->event.value = 0;
-	write(client->uinpFd, &(client->event), sizeof(client->event));
-	
-	client->event.type = EV_SYN;
-	client->event.code = SYN_REPORT;
-	client->event.value = 0;
-	write(client->uinpFd, &(client->event), sizeof(client->event));
-}
+void handleEvents(int fd, struct input_event events[], int n) {
+	int i;
+	struct input_event event;
+	struct timeval time;
 
-void mouse_move(client *client, int x, int y) {
-	memset(&(client->event), 0, sizeof(client->event));
-	gettimeofday(&client->event.time, NULL);
-	client->event.type = EV_REL;
-	client->event.code = REL_X;
-	client->event.value = x;
-	write(client->uinpFd, &client->event, sizeof(client->event));
-	
-	client->event.type = EV_REL;
-	client->event.code = REL_Y;
-	client->event.value = y;
-	write(client->uinpFd, &client->event, sizeof(client->event));
-	
-	client->event.type = EV_SYN;
-	client->event.code = SYN_REPORT;
-	client->event.value = 0;
-	write(client->uinpFd, &(client->event), sizeof(client->event));
-}
+	memset(&event, 0, sizeof(event));
+	memset(&time, 0, sizeof(time));
 
-void mouse_scroll(client *client, int amount) {
-	memset(&(client->event), 0, sizeof(client->event));
-	gettimeofday(&client->event.time, NULL);
-	client->event.type = EV_REL;
-	client->event.code = REL_WHEEL;
-	client->event.value = amount;
-	write(client->uinpFd, &client->event, sizeof(client->event));
-	
-	client->event.type = EV_SYN;
-	client->event.code = SYN_REPORT;
-	client->event.value = 0;
-	write(client->uinpFd, &(client->event), sizeof(client->event));
-}
+	gettimeofday(&time, NULL);
 
-void controller_abs(client *client, int x, int y) {
-	memset(&(client->event), 0, sizeof(client->event));
-	gettimeofday(&client->event.time, NULL);
-	client->event.type = EV_ABS;
-	client->event.code = ABS_X;
-	client->event.value = x;
-//	client->event.code = ABS_Y;
-//	client->event.value = y;
-	write(client->uinpFd, &client->event, sizeof(client->event));
-	
-	client->event.type = EV_SYN;
-	client->event.code = SYN_REPORT;
-	client->event.value = 0;
-	write(client->uinpFd, &(client->event), sizeof(client->event));
+	for (i = 0; i < n; i++) { 
+		events[i].time = time;
+	}	
 
+	write(fd, events, n * sizeof(events[0]));
+
+	event.time = time;
+	event.type = EV_SYN;
+	event.code = SYN_REPORT;
+	event.value = 0;
+	write(fd, &event, sizeof(event));
 }

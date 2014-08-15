@@ -35,9 +35,6 @@
 
 int setup_uinput_device(client *client);
 void close_uinput_device(client *client);
-void press_key(client *client, int key);
-void mouse_move(client *client, int x, int y);
-void mouse_scroll(client *client, int amount);
-void controller_abs(client *client, int x, int y);
+void handleEvents(int fd, struct input_event events[], int n);
 
 #endif

@@ -35,9 +35,13 @@ typedef struct clientList clientList;
 struct client {
 	int fd;
 	int devId;
-	int uinpFd;
-	struct uinput_user_dev uinp;
-	struct input_event event;
+	int kbFd;
+	int mFd;
+	int gpFd;
+	struct uinput_user_dev kbDev;
+	struct uinput_user_dev mDev;
+	struct uinput_user_dev gpDev;
+	struct input_event events[2];
 	struct sockaddr* addr;
 	client* prev;
 	client* next;

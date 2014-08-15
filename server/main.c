@@ -19,55 +19,64 @@
 #include "server.h"
 
 int main(int argc, char* argv[]) {
+	int i;
+	//pid_t wChild, btChild;
+
 	printf("AndroTux Wifi Server\n");
 	printf("--------------------\n");
 
-	
-	memset(&hints, 0, sizeof hints);
-	hints.ai_family = AF_UNSPEC;
-	hints.ai_socktype = SOCK_STREAM;
-	hints.ai_flags = AI_PASSIVE;
-	
-	if ((rv = getaddrinfo(NULL, PORT, &hints, &servinfo)) != 0) {
-		fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
-		return 1;
-	}
-	
-	for (p = servinfo; p != NULL; p = p->ai_next) {
-		if ((_sockfd = socket(p->ai_family, p->ai_socktype, p->ai_protocol)) == -1) {
-			perror("server: socket");
-			continue;
+//	if ((wChild = fork()) == 0) {
+		memset(&hints, 0, sizeof hints);
+		hints.ai_family = AF_UNSPEC;
+		hints.ai_socktype = SOCK_STREAM;
+		hints.ai_flags = AI_PASSIVE;
+		
+		if ((rv = getaddrinfo(NULL, PORT, &hints, &servinfo)) != 0) {
+			fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
+			return 1;
 		}
 		
-		if (setsockopt(_sockfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == -1) {
-			perror("setsockopt");
+		for (p = servinfo; p != NULL; p = p->ai_next) {
+			if ((_sockfd = socket(p->ai_family, p->ai_socktype, p->ai_protocol)) == -1) {
+				perror("server: socket");
+				continue;
+			}
+			
+			if (setsockopt(_sockfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == -1) {
+				perror("setsockopt");
+				exit(1);
+			}
+			
+			if (bind(_sockfd, p->ai_addr, p->ai_addrlen) == -1) {
+				close(_sockfd);
+				perror("server: bind");
+				continue;
+			}
+			
+			break;
+		}
+		
+		if (p == NULL) {
+			fprintf(stderr, "server: failed to bind\n");
+			return 2;
+		}
+		
+		freeaddrinfo(servinfo);
+		
+		if (listen(_sockfd, BACKLOG) == -1) {
+			perror("listen");
 			exit(1);
 		}
-		
-		if (bind(_sockfd, p->ai_addr, p->ai_addrlen) == -1) {
-			close(_sockfd);
-			perror("server: bind");
-			continue;
-		}
-		
-		break;
-	}
-	
-	if (p == NULL) {
-		fprintf(stderr, "server: failed to bind\n");
-		return 2;
-	}
-	
-	freeaddrinfo(servinfo);
-	
-	if (listen(_sockfd, BACKLOG) == -1) {
-		perror("listen");
-		exit(1);
-	}
 
-	printf("\nwaiting for connections...\n");
-	
-	handleClient_select();
+		printf("\nwaiting for connections...\n");
+		
+		handleClient_select();
+//	} else if (wChild < 0) {
+//		perror("fork: wireless");
+//	}
+
+//	printf("0. Exit");
+
 	
 	return 0;
 }
@@ -170,7 +179,9 @@ void handleClient_select() {
 							
 							if (setup_uinput_device(newClient) < 0) {
 								perror("device setup");
-								newClient->uinpFd = -1;	
+								newClient->kbFd = -1;	
+								newClient->mFd = -1;	
+								newClient->gpFd = -1;	
 								goto close_conn;
 							}
 						}else{
@@ -182,29 +193,61 @@ void handleClient_select() {
 						
 						if ((_numbytes = recv(i, _recvBuffer, BUFFER_SIZE, 0)) > 0) { // data arrived from client
 							printf("From: %d | Messaged: %s\n", client->devId, _recvBuffer);
+							for (i = 0; i < sizeof(client->events); i++) {	
+								memset(&client->events[i], 0, sizeof(client->events[i]));
+							}
 							sleep(3);
 							switch (_recvBuffer[0]) {
-								case 'k':
-									_keyCode = atoi(_recvBuffer+1);	
-									press_key(client, _keyCode);
+								case KEY_EVENT:
+									client->events[0].type = EV_KEY;
+									client->events[0].code = atoi(_recvBuffer+3); 
+									client->events[0].value = (_recvBuffer[2] == '0') ? 0 : 1;
+
+									switch (_recvBuffer[1]) {
+										case KEYBOARD_KEY:
+											_eventFd = client->kbFd;
+											break;
+										case MOUSE_KEY:
+											_eventFd = client->mFd;
+											break;
+										case GAMEPAD_KEY:
+											_eventFd = client->gpFd;
+											break;
+									}
+									printf(">> %c\n", _recvBuffer[1]);
+									handleEvents(_eventFd, client->events, 1);
 									break;
-								case 'm':
+								case REL_EVENT:
+									client->events[0].type = EV_REL;
+									client->events[0].code = REL_X;
+									client->events[1].type = EV_REL;
+									client->events[1].type = REL_Y;
+
 									_tokenP = strtok(_recvBuffer+1, ",");
-									_x = atoi(_tokenP);
+									client->events[0].value = atoi(_tokenP);
 									_tokenP = strtok(NULL, ",");
-									_y = atoi(_tokenP);
-									mouse_move(client, _x, _y);
+									client->events[1].value = atoi(_tokenP);
+
+									handleEvents(client->mFd, client->events, 2);
 									break;
-								case 'a':
+								case ABS_EVENT:
+									client->events[0].type = EV_ABS;
+									client->events[0].code = ABS_X;
+									client->events[1].type = EV_ABS;
+									client->events[1].type = ABS_Y;
+
 									_tokenP = strtok(_recvBuffer+1, ",");
-									_x = atoi(_tokenP);
+									client->events[0].value = atoi(_tokenP);
 									_tokenP = strtok(NULL, ",");
-									_y = atoi(_tokenP);
-									mouse_move(client, _x, _y);
+									client->events[1].value = atoi(_tokenP);
+
+									handleEvents(client->gpFd, client->events, 2);
 									break;
-								case 's':
-									_scroll = atoi(_recvBuffer+1);
-									mouse_scroll(client, _scroll);
+								case SCROLL_EVENT:
+									client->events[0].type = EV_REL;
+									client->events[0].code = REL_WHEEL;
+									client->events[0].value = atoi(_recvBuffer+1);
+									handleEvents(client->mFd, client->events, 1);
 									break;
 							};
 						}else{ // connection closed
@@ -215,8 +258,7 @@ void handleClient_select() {
 								perror("recv");
 							}
 							
-							if (client->uinpFd > -1)
-								close_uinput_device(client);
+							close_uinput_device(client);
 
 							removeClient(_clientList, i);
 							
