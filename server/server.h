@@ -65,8 +65,6 @@ int _numbytes;
 char _recvBuffer[BUFFER_SIZE];
 char _sendBuffer[BUFFER_SIZE];
 
-clientList *_clientList;
-
 void sigchld_handler(int s);
 void* get_in_addr(struct sockaddr *sa);
 
@@ -80,7 +78,7 @@ int processCommandLineArgs(int argc, char* argv[]);
 
 void handleClient_select();
 
-int _eventFd, _x, _y, _scroll;
+int _clientId, _eventFd, _x, _y, _scroll;
 char *_tokenP;
 
 #endif

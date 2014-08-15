@@ -22,15 +22,12 @@ static int setupKeyboard(client *client);
 static int setupMouse(client *client);
 static int setupGamepad(client *client);
 
-static int devIdCount = 0;
-
 int setup_uinput_device(client *client) {
 	setupKeyboard(client);
 	setupMouse(client);
 	setupGamepad(client);
-	devIdCount++;
 	
-	return 1;
+	return 0;
 }
 
 static int setupKeyboard(client *client) {
@@ -39,23 +36,21 @@ static int setupKeyboard(client *client) {
 	
 	if (!(client->kbFd = open("/dev/uinput", O_WRONLY, O_NDELAY))) {
 		printf("Unable to open /dev/uinput.\n");
-		return 0;
+		return 1;
 	}
 	
 	memset(&client->kbDev, 0, sizeof(client->kbDev));
 
-	client->devId = devIdCount;
-	sprintf(devName, "AndroTux%d[Keyboard]\n", devIdCount);
+	sprintf(devName, "AndroTux%d[Keyboard]\n", client->devId);
 	printf("Device name: %s\n", devName);	
 	strncpy(client->kbDev.name, devName, UINPUT_MAX_NAME_SIZE);
 	client->kbDev.id.bustype = BUS_USB;
 	client->kbDev.id.vendor = 0;
 	client->kbDev.id.product = 0;
-	client->kbDev.id.version = 0;
-
-	// ioctl(client->uinpFd, UI_SET_EVBIT, EV_SYN);
+	client->kbDev.id.version = 1;
 
 	ioctl(client->kbFd, UI_SET_EVBIT, EV_KEY);
+	ioctl(client->kbFd, UI_SET_EVBIT, EV_SYN);
 	
 	for (i = 0; i < 256 ; i++) {
 		ioctl(client->kbFd, UI_SET_KEYBIT, i);
@@ -63,13 +58,15 @@ static int setupKeyboard(client *client) {
 
 	if (write(client->kbFd, &(client->kbDev), sizeof(client->kbDev)) < 0) {
 		perror ("error: write");
-		return 0;
+		return 1;
 	}
 	
 	if (ioctl(client->kbFd, UI_DEV_CREATE)) {
 		printf("Unable to create uinput device.\n");
-		return 0;
+		return 1;
 	}
+
+	return 0;
 }
 
 static int setupMouse(client *client) {
@@ -82,19 +79,17 @@ static int setupMouse(client *client) {
 	
 	memset(&client->mDev, 0, sizeof(client->mDev));
 
-	client->devId = devIdCount;
-	sprintf(devName, "AndroTux%d[Mouse]\n", devIdCount);
+	sprintf(devName, "AndroTux%d[Mouse]\n", client->devId);
 	printf("Device name: %s\n", devName);	
 	strncpy(client->mDev.name, devName, UINPUT_MAX_NAME_SIZE);
 	client->mDev.id.bustype = BUS_USB;
 	client->mDev.id.vendor = 0;
 	client->mDev.id.product = 1;
-	client->mDev.id.version = 0;
-
-	// ioctl(client->mFd, UI_SET_EVBIT, EV_SYN);
+	client->mDev.id.version = 1;
 
 	ioctl(client->mFd, UI_SET_EVBIT, EV_REL);
 	ioctl(client->mFd, UI_SET_EVBIT, EV_KEY);
+	ioctl(client->mFd, UI_SET_EVBIT, EV_SYN);
 	
 	ioctl(client->mFd, UI_SET_RELBIT, REL_X);
 	ioctl(client->mFd, UI_SET_RELBIT, REL_Y);
@@ -130,30 +125,28 @@ static int setupGamepad(client *client) {
 	
 	memset(&client->gpDev, 0, sizeof(client->mDev));
 
-	client->devId = devIdCount;
-	sprintf(devName, "AndroTux%d[Gamepad]\n", devIdCount);
+	sprintf(devName, "AndroTux%d[Gamepad]\n", client->devId);
 	printf("Device name: %s\n", devName);	
 	strncpy(client->gpDev.name, devName, UINPUT_MAX_NAME_SIZE);
 	client->gpDev.id.bustype = BUS_USB;
 	client->gpDev.id.vendor = 0;
 	client->gpDev.id.product = 2;
-	client->gpDev.id.version = 0;
-
-	// ioctl(client->gpFd, UI_SET_EVBIT, EV_SYN);
+	client->gpDev.id.version = 1;
 
 	ioctl(client->gpFd, UI_SET_EVBIT, EV_ABS);
 	ioctl(client->gpFd, UI_SET_EVBIT, EV_KEY);
+	ioctl(client->gpFd, UI_SET_EVBIT, EV_SYN);
 	
 	ioctl(client->gpFd, UI_SET_ABSBIT, ABS_X);
 	ioctl(client->gpFd, UI_SET_ABSBIT, ABS_Y);
 
 	client->gpDev.absmin[ABS_X] = -1023;
-	client->gpDev.absmax[ABS_X] = 1023;
+	client->gpDev.absmax[ABS_X] = 1023;;
 	client->gpDev.absfuzz[ABS_X] = 0;
 	client->gpDev.absflat[ABS_X] = 0;
 
-	client->gpDev.absmin[ABS_Y] = -1023;
-	client->gpDev.absmax[ABS_Y] = 1023;
+	client->gpDev.absmin[ABS_Y] = -1023;;
+	client->gpDev.absmax[ABS_Y] = 1023;;
 	client->gpDev.absfuzz[ABS_Y] = 0;
 	client->gpDev.absflat[ABS_Y] = 0;
 
@@ -205,20 +198,18 @@ void close_uinput_device(client *client) {
 void handleEvents(int fd, struct input_event events[], int n) {
 	int i;
 	struct input_event event;
-	struct timeval time;
 
+	printf("IN>> %d, %d\n", events[0].code, events[1].code);
 	memset(&event, 0, sizeof(event));
-	memset(&time, 0, sizeof(time));
-
-	gettimeofday(&time, NULL);
-
+	gettimeofday(&event.time, NULL);
+	
 	for (i = 0; i < n; i++) { 
-		events[i].time = time;
+		event.type = events[i].type;
+		event.code = events[i].code;
+		event.value = events[i].value;
+		write(fd, &event, sizeof(event));
 	}	
 
-	write(fd, events, n * sizeof(events[0]));
-
-	event.time = time;
 	event.type = EV_SYN;
 	event.code = SYN_REPORT;
 	event.value = 0;

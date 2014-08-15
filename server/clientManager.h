@@ -27,10 +27,11 @@
 #include <sys/types.h>
 #include <linux/uinput.h>
 
+#define MAX_DEVICES 4
+#define MAX_EVENTS 2
 #define BUFFER_SIZE 1024
 
 typedef struct client client;
-typedef struct clientList clientList;
 
 struct client {
 	int fd;
@@ -41,22 +42,14 @@ struct client {
 	struct uinput_user_dev kbDev;
 	struct uinput_user_dev mDev;
 	struct uinput_user_dev gpDev;
-	struct input_event events[2];
+	struct input_event events[MAX_EVENTS];
 	struct sockaddr* addr;
-	client* prev;
-	client* next;
 };
 
-struct clientList {
-	client* base;
-};
-
-clientList* createClientList();
-int removeClient(clientList* list, int fd);
-void addClient(clientList* list, client* c);
-client* getClient(clientList* list, int fd);
-client* getClientByAddress(clientList* list, struct sockaddr* addr);
-
-client* createClient(int fd, struct sockaddr* addr);
+void initializeClientsArray();
+client* createClient(int fd);
+int removeClient(int fd);
+client* getClient(int fd);
+client* getClientByAddress(struct sockaddr* addr);
 
 #endif

@@ -157,9 +157,9 @@ void handleClient_select() {
 	
 	FD_SET(_sockfd, &master);
 	fdmax = _sockfd;
-	
-	_clientList = createClientList();
-	
+
+	initializeClientsArray();
+
 	while(1) {
 		read_fds = master;
 		if (select(fdmax+1, &read_fds, NULL, NULL, NULL) != -1) {
@@ -168,16 +168,21 @@ void handleClient_select() {
 					if (i == _sockfd) { // new connection
 						_addrLength = sizeof _remoteAddr;
 						_newfd = accept(_sockfd, (struct sockaddr*)&_remoteAddr, &_addrLength);
+
 						if (_newfd != -1) {
-							newClient = createClient(_newfd, NULL);
-							addClient(_clientList, newClient);
+							if ((newClient = createClient(_newfd)) == NULL) {
+								close(i);
+								FD_CLR(i, &master);
+								continue;
+							}
+
 							FD_SET(_newfd, &master);
 							fdmax = (_newfd > fdmax) ? _newfd : fdmax;
 							
 							inet_ntop(_remoteAddr.ss_family, get_in_addr((struct sockaddr*)&_remoteAddr), _remoteIP, INET6_ADDRSTRLEN);
 							printf("new connection from %s on socket %d\n", _remoteIP, _newfd);
 							
-							if (setup_uinput_device(newClient) < 0) {
+							if (newClient == NULL || setup_uinput_device(newClient) < 0) {
 								perror("device setup");
 								newClient->kbFd = -1;	
 								newClient->mFd = -1;	
@@ -188,12 +193,12 @@ void handleClient_select() {
 							perror("accept");
 						}
 					}else{ // data from client
-						client = getClient(_clientList, i);
+						client = getClient(i);
 						memset(_recvBuffer, '\0', BUFFER_SIZE);
 						
 						if ((_numbytes = recv(i, _recvBuffer, BUFFER_SIZE, 0)) > 0) { // data arrived from client
 							printf("From: %d | Messaged: %s\n", client->devId, _recvBuffer);
-							for (i = 0; i < sizeof(client->events); i++) {	
+							for (i = 0; i < MAX_EVENTS; i++) {	
 								memset(&client->events[i], 0, sizeof(client->events[i]));
 							}
 							sleep(3);
@@ -221,20 +226,20 @@ void handleClient_select() {
 									client->events[0].type = EV_REL;
 									client->events[0].code = REL_X;
 									client->events[1].type = EV_REL;
-									client->events[1].type = REL_Y;
-
+									client->events[1].code = REL_Y;
+									
 									_tokenP = strtok(_recvBuffer+1, ",");
 									client->events[0].value = atoi(_tokenP);
 									_tokenP = strtok(NULL, ",");
 									client->events[1].value = atoi(_tokenP);
-
+									
 									handleEvents(client->mFd, client->events, 2);
 									break;
 								case ABS_EVENT:
 									client->events[0].type = EV_ABS;
 									client->events[0].code = ABS_X;
 									client->events[1].type = EV_ABS;
-									client->events[1].type = ABS_Y;
+									client->events[1].code = ABS_Y;
 
 									_tokenP = strtok(_recvBuffer+1, ",");
 									client->events[0].value = atoi(_tokenP);
@@ -260,7 +265,7 @@ void handleClient_select() {
 							
 							close_uinput_device(client);
 
-							removeClient(_clientList, i);
+							removeClient(i);
 							
 							close(i);
 							FD_CLR(i, &master);
