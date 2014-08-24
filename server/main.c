@@ -197,11 +197,11 @@ void handleClient_select() {
 						memset(_recvBuffer, '\0', BUFFER_SIZE);
 						
 						if ((_numbytes = recv(i, _recvBuffer, BUFFER_SIZE, 0)) > 0) { // data arrived from client
-							printf("From: %d | Messaged: %s\n", client->devId, _recvBuffer);
+							//printf("From: %d | Messaged: %s\n", client->devId, _recvBuffer);
 							for (i = 0; i < MAX_EVENTS; i++) {	
 								memset(&client->events[i], 0, sizeof(client->events[i]));
 							}
-							sleep(3);
+							// sleep(3);
 							switch (_recvBuffer[0]) {
 								case KEY_EVENT:
 									client->events[0].type = EV_KEY;
@@ -219,7 +219,7 @@ void handleClient_select() {
 											_eventFd = client->gpFd;
 											break;
 									}
-									printf(">> %c\n", _recvBuffer[1]);
+								//	printf(">> %c\n", _recvBuffer[1]);
 									handleEvents(_eventFd, client->events, 1);
 									break;
 								case REL_EVENT:
@@ -229,9 +229,9 @@ void handleClient_select() {
 									client->events[1].code = REL_Y;
 									
 									_tokenP = strtok(_recvBuffer+1, ",");
-									client->events[0].value = atoi(_tokenP);
+									client->events[0].value = atof(_tokenP);
 									_tokenP = strtok(NULL, ",");
-									client->events[1].value = atoi(_tokenP);
+									client->events[1].value = atof(_tokenP);
 									
 									handleEvents(client->mFd, client->events, 2);
 									break;

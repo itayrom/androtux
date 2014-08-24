@@ -199,7 +199,7 @@ void handleEvents(int fd, struct input_event events[], int n) {
 	int i;
 	struct input_event event;
 
-	printf("IN>> %d, %d\n", events[0].code, events[1].code);
+//	printf("IN>> %d, %d\n", events[0].code, events[1].code);
 	memset(&event, 0, sizeof(event));
 	gettimeofday(&event.time, NULL);
 	
