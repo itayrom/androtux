@@ -18,14 +18,19 @@
 
 #include "server.h"
 
-int main(int argc, char* argv[]) {
+int main(int argc, char *argv[]) {
 	int i;
 	//pid_t wChild, btChild;
+	
+	yes = 1;
 
 	printf("AndroTux Wifi Server\n");
 	printf("--------------------\n");
 
 //	if ((wChild = fork()) == 0) {
+
+		sdp_session = register_service();
+		isBluetooth = initBtSocket();	
 		memset(&hints, 0, sizeof hints);
 		hints.ai_family = AF_UNSPEC;
 		hints.ai_socktype = SOCK_STREAM;
@@ -71,6 +76,8 @@ int main(int argc, char* argv[]) {
 		printf("\nwaiting for connections...\n");
 		
 		handleClient_select();
+
+		sdp_close(sdp_session);
 //	} else if (wChild < 0) {
 //		perror("fork: wireless");
 //	}
@@ -166,8 +173,9 @@ void handleClient_select() {
 			for (i = 0; i <= fdmax; i++) {
 				if (FD_ISSET(i, &read_fds)) {
 					if (i == _sockfd) { // new connection
-						_addrLength = sizeof _remoteAddr;
-						_newfd = accept(_sockfd, (struct sockaddr*)&_remoteAddr, &_addrLength);
+						_addrLength = sizeof(_remoteAddr);
+							
+						_newfd = accept(i, (struct sockaddr*)&_remoteAddr, &_addrLength);
 
 						if (_newfd != -1) {
 							if ((newClient = createClient(_newfd)) == NULL) {
@@ -192,6 +200,35 @@ void handleClient_select() {
 						}else{
 							perror("accept");
 						}
+					}else if (i == _btSockFd){
+						_addrLength = sizeof(struct sockaddr_rc);
+							
+						_newfd = accept(i, (struct sockaddr*)&_remoteAddr, &_addrLength);
+
+						if (_newfd != -1) {
+							if ((newClient = createClient(_newfd)) == NULL) {
+								close(i);
+								FD_CLR(i, &master);
+								continue;
+							}
+
+							FD_SET(_newfd, &master);
+							fdmax = (_newfd > fdmax) ? _newfd : fdmax;
+							
+							ba2str(&_remAddr.rc_bdaddr, _remoteIP);
+							printf("new connection from %s on socket %d\n", _remoteIP, _newfd);
+							
+							if (newClient == NULL || setup_uinput_device(newClient) < 0) {
+								perror("device setup");
+								newClient->kbFd = -1;	
+								newClient->mFd = -1;	
+								newClient->gpFd = -1;	
+								goto close_conn;
+							}
+						}else{
+							perror("accept");
+						}
+
 					}else{ // data from client
 						client = getClient(i);
 						memset(_recvBuffer, '\0', BUFFER_SIZE);
@@ -242,9 +279,9 @@ void handleClient_select() {
 									client->events[1].code = ABS_Y;
 
 									_tokenP = strtok(_recvBuffer+1, ",");
-									client->events[0].value = atoi(_tokenP);
+									client->events[0].value = atof(_tokenP);
 									_tokenP = strtok(NULL, ",");
-									client->events[1].value = atoi(_tokenP);
+									client->events[1].value = atof(_tokenP);
 
 									handleEvents(client->gpFd, client->events, 2);
 									break;
@@ -253,6 +290,11 @@ void handleClient_select() {
 									client->events[0].code = REL_WHEEL;
 									client->events[0].value = atoi(_recvBuffer+1);
 									handleEvents(client->mFd, client->events, 1);
+									break;
+								case COMMAND_EVENT:
+								/*	if (fork() == 0) {
+										execv("/usr/bin/vlc", args);
+									}*/
 									break;
 							};
 						}else{ // connection closed

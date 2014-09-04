@@ -16,8 +16,8 @@
 
 all: main
 
-main: main.o clientManager.o inputHandler.o
-	gcc main.o clientManager.o inputHandler.o -o main
+main: main.o clientManager.o inputHandler.o bthandler.o
+	gcc main.o clientManager.o inputHandler.o bthandler.o -o main -lbluetooth
 
 main.o: main.c
 	gcc -g -c main.c 
@@ -27,6 +27,9 @@ clientManager.o: clientManager.c
 	
 inputHandler.o: inputHandler.c
 	gcc -g -c inputHandler.c
+
+bthandler.o: bthandler.c
+	gcc -g -c bthandler.c -lbluetooth
 	
 clean:
 	rm *.o main
