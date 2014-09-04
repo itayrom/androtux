@@ -1,0 +1,43 @@
+package src.androtux.adaptes;
+
+import com.androtux.BluetoothClient;
+
+import android.app.Activity;
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.TextView;
+
+public class ClientArrayAdapter extends ArrayAdapter<BluetoothClient>{
+	private Context _context;
+	private int _layoutResourceId;
+	private BluetoothClient[] _clients;
+	
+    public ClientArrayAdapter(Context mContext, int layoutResourceId, BluetoothClient[] clients) {
+
+        super(mContext, layoutResourceId, clients);
+
+        _layoutResourceId = layoutResourceId;
+        _context = mContext;
+        _clients = clients;
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        if(convertView==null){
+            LayoutInflater inflater = ((Activity)_context).getLayoutInflater();
+            convertView = inflater.inflate(_layoutResourceId, parent, false);
+        }
+
+        BluetoothClient objectItem = _clients[position];
+
+        TextView textViewItem = (TextView) convertView.findViewById(R.id.textViewItem);
+        textViewItem.setText(objectItem.getName() + "\n" + objectItem.getAddress());
+        textViewItem.setTag(objectItem.getAddress());
+
+        return convertView;
+
+    }
+}

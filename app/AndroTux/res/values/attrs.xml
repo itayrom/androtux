@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="TouchKey">
+        <attr name="android:text" />
+        <attr name="keytype" format="string" />
+        <attr name="keycode" format="string" />
+        <attr name="color" format="color" />
+    </declare-styleable>
+    <declare-styleable name="ToggleButton">
+        <attr name="onColor" format="color" />
+        <attr name="offColor" format="color" />
+    </declare-styleable>
+</resources>

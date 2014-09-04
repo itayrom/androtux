@@ -1,0 +1,35 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <TextView 
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Paired Devices:"/>
+
+    <ListView
+        android:id="@+id/lvPaired"
+        android:layout_width="match_parent"
+        android:layout_height="100dp">
+    </ListView>
+    
+    <TextView 
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="Discovered Devices:"/>
+
+    <com.androtux.TouchButton
+        android:id="@+id/touchButton1"
+        android:layout_width="wrap_content"
+        android:layout_height="25dp"
+        android:text="Search for devices" />
+
+    <ListView
+        android:id="@+id/lvDiscovered"
+        android:layout_width="match_parent"
+        android:layout_height="100dp">
+    </ListView>
+    
+</LinearLayout>

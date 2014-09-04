@@ -1,0 +1,60 @@
+<!-- 
+  Android Remote for Tux (AndroTux) 
+  Copyright (C) 2014 Itay Rom <1t4yr0m@gmail.com> Tal Sabo <tal.sabo@gmail.com> 
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.androtux.MainActivity$PlaceholderFragment" xmlns:app="http://schemas.android.com/apk/res/com.androtux">
+
+    <ImageButton
+        android:id="@+id/imageButton1"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="15dp"
+        android:onClick="playAA"
+        android:src="@drawable/aa" />
+
+    <com.androtux.TouchKey
+        android:id="@+id/touchKey1"
+        android:layout_width="100dp"
+        android:layout_height="30dp"
+        android:layout_alignLeft="@+id/imageButton1"
+        android:layout_below="@+id/imageButton1"
+        android:layout_marginTop="16dp"
+        android:text="+Volume"
+        app:keycode="115"
+        app:keytype="k" />
+
+    <com.androtux.TouchKey
+        android:id="@+id/TouchKey01"
+        android:layout_width="100dp"
+        android:layout_height="30dp"
+        android:layout_alignLeft="@+id/touchKey1"
+        android:layout_below="@+id/touchKey1"
+        android:layout_marginTop="17dp"
+        android:text="-Volume"
+        app:keycode="114"
+        app:keytype="k" />
+
+</RelativeLayout>

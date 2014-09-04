@@ -1,0 +1,82 @@
+package com.androtux;
+
+import android.content.Context;
+import android.graphics.Canvas;
+import android.util.AttributeSet;
+import android.view.MotionEvent;
+import android.view.View;
+
+public abstract class AbstractKey extends View {
+	private String _keyType;
+	private String _keyCode;
+	
+	public AbstractKey(Context context) {
+		super(context);
+		init();
+	}
+	
+	public AbstractKey(Context context, AttributeSet attrs) {
+		super(context, attrs);
+		init();
+	}
+	
+	public AbstractKey(Context context, AttributeSet attrs, int defStyle) {
+		super(context, attrs, defStyle);
+		init();
+	}
+	
+	private void init() {
+	}
+	
+	@Override
+	public boolean onTouchEvent(MotionEvent event) {
+		String str;
+    	int action = event.getActionMasked();
+    	
+    	switch(action) {
+    	case MotionEvent.ACTION_DOWN:
+    		str = "k" + _keyType + "1" + _keyCode;
+			CommunicationHandler.getInstance().sendData(str);
+			setPressedParams();
+			break;
+    	case MotionEvent.ACTION_UP:
+    		str = "k" + _keyType + "0" + _keyCode;
+			CommunicationHandler.getInstance().sendData(str);
+			setReleasedParams();
+			
+			break;
+    	}
+    	
+    	this.invalidate();
+		return true;
+	}
+	
+	@Override
+	protected void onDraw(Canvas canvas) {
+		super.onDraw(canvas);
+		drawKey(canvas);
+	}
+	
+	public abstract void drawKey(Canvas canvas);
+	public abstract void setReleasedParams();
+	public abstract void setPressedParams();
+	public abstract void onRelease();
+	public abstarct void onPress();
+	
+	public void setKeyType(String keyType) {
+		_keyType = keyType;
+	}
+	
+	public String getKeyType() {
+		return _keyType;
+	}
+	
+	public void setKeyCode(String keyCode) {
+		_keyCode = keyCode;
+	}
+	
+	public String getKeyCode() {
+		return _keyCode;
+	}
+
+}

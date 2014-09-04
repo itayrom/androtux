@@ -1,0 +1,80 @@
+package com.androtux;
+
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.net.UnknownHostException;
+
+public class CommunicationHandler {
+	private static CommunicationHandler _handler = null;
+	
+	private InetAddress _serverAddr;
+	private int _port;
+	private Socket _socket;
+	
+	private CommunicationHandler() {
+		
+	}
+	
+	public static CommunicationHandler getInstance() {
+		if (_handler == null) {
+			_handler = new CommunicationHandler();
+		}
+		
+		return _handler;
+	}
+	
+	public boolean connect(String ip, int port) {
+		try {
+			_serverAddr = InetAddress.getByName(ip);
+			_port = port;
+			new Thread(new ClientThread()).start();
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+			return false;
+		}
+		
+		return true;
+	}
+	
+	public boolean disconnect() {
+		return true;
+	}
+	
+	public boolean sendData(String str) {
+		try {
+			PrintWriter out = new PrintWriter(new BufferedWriter(
+	                new OutputStreamWriter(_socket.getOutputStream())),
+	                true);
+	        out.println(str);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+		
+		return true;
+	}
+	
+	class ClientThread implements Runnable {
+	    @Override
+	    public void run() {
+
+	        try {
+	            _socket = new Socket(_serverAddr, _port);
+
+	        } catch (UnknownHostException e1) {
+	            e1.printStackTrace();
+	        } catch (IOException e1) {
+	            e1.printStackTrace();
+	        }
+
+	    }
+	}
+}
+

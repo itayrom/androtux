@@ -1,0 +1,2 @@
+INDEX VERSION 1.126+/home/itay/androtux/app/.metadata/.plugins/org.eclipse.jdt.core
+3169144396.index

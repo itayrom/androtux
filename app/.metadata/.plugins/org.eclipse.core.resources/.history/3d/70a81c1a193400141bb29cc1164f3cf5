@@ -1,0 +1,28 @@
+package com.androtux;
+
+public class BluetoothClient {
+	private String _name;
+	private String _address;
+	
+	public BluetoothClient(String name, String address) {
+		setName(name);
+		setAddress(address);
+	}
+	
+	public void setName(String name) {
+		_name = name;
+	}
+	
+	public String getName() {
+		return _name;
+	}
+	
+	public void setAddress(String address) {
+		_address = address;
+	}
+	
+	public String getAddress() {
+		return _address;
+	}
+
+}

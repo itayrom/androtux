@@ -1,0 +1,9 @@
+package src.androtux.adaptes;
+
+import com.androtux.BluetoothClient;
+
+import android.widget.ArrayAdapter;
+
+public class ClientArrayAdapter extends ArrayAdapter<BluetoothClient>{
+
+}

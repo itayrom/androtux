@@ -1,0 +1,100 @@
+package com.androtux;
+
+import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Paint.Style;
+import android.graphics.Rect;
+import android.util.AttributeSet;
+import android.view.MotionEvent;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
+import android.widget.Button;
+
+public class Touchpad extends Button {
+	boolean movementDetected, isScroll;
+	private float _x, _y;
+	
+	public Touchpad(Context context) {
+		super(context);
+	}
+	
+	public Touchpad(Context context, AttributeSet attrs) {
+		super(context, attrs);
+	}
+	
+	public Touchpad(Context context, AttributeSet attrs, int defStyle) {
+		super(context, attrs, defStyle);
+	}
+	
+	@Override
+    public boolean onTouchEvent(MotionEvent event) {
+		String str;
+    	float x, y, offsetX, offsetY;
+    	int action = event.getActionMasked();
+    	
+    	switch(action) {
+    	case MotionEvent.ACTION_POINTER_UP:
+    	case MotionEvent.ACTION_POINTER_DOWN:
+    		movementDetected = false;
+    		_y = event.getAxisValue(MotionEvent.AXIS_Y);
+    		isScroll = (event.getPointerCount() == 2) ? true : false;
+    		break;
+    		
+    	case MotionEvent.ACTION_MOVE:
+    		if (isScroll) {
+	    		movementDetected = true;
+	    		y = event.getAxisValue(MotionEvent.AXIS_Y);
+	    		
+	    		offsetY = _y - y;
+	    		
+	    		//if (Math.abs(offsetY) > 0.1) {
+		    		str = "s" + offsetY;
+		            CommunicationHandler.getInstance().sendData(str);
+		            
+		    		_y = y;
+	    		//}
+    		}
+    		break;
+/*    	case MotionEvent.ACTION_DOWN:
+    		movementDetected = false;
+    		_x = event.getAxisValue(MotionEvent.AXIS_X);
+    		_y = event.getAxisValue(MotionEvent.AXIS_Y);
+    		break;
+    	case MotionEvent.ACTION_MOVE:
+    		movementDetected = true;
+    		x = event.getAxisValue(MotionEvent.AXIS_X);
+    		y = event.getAxisValue(MotionEvent.AXIS_Y);
+    		
+    		offsetX = x - _x;
+    		offsetY = y - _y;
+    		
+    		if (Math.abs(offsetX) > 0.1 && Math.abs(offsetY) > 0.1) {
+	    		str = "r" + offsetX + "," + offsetY;
+	            CommunicationHandler.getInstance().sendData(str);
+	            
+	    		_x = x;
+	    		_y = y;
+    		}
+    		break;
+    	case MotionEvent.ACTION_UP:
+    		if (!movementDetected) {
+	    		x = event.getAxisValue(MotionEvent.AXIS_X);
+	    		y = event.getAxisValue(MotionEvent.AXIS_Y);
+	    		
+	    		if (_x == x && _y == y) {
+	    			str = "km1272";
+	    			CommunicationHandler.getInstance().sendData(str);
+	    			str = "km0272";
+	    			CommunicationHandler.getInstance().sendData(str);
+	    		}
+    		}
+    		break;*/
+    	case MotionEvent.ACTION_CANCEL:
+    		break;
+    	}
+    	
+    	return true;
+    }
+}

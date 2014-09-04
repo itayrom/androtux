@@ -1,0 +1,685 @@
+<!-- 
+  Android Remote for Tux (AndroTux) 
+  Copyright (C) 2014 Itay Rom <1t4yr0m@gmail.com> Tal Sabo <tal.sabo@gmail.com> 
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res/com.androtux"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#505050"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="13">
+
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Esc"
+            app:keycode="1"
+            app:keytype="k" />
+
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="F1"
+            app:keycode="59"
+            app:keytype="k" />
+
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="F2"
+            app:keycode="60"
+            app:keytype="k" />
+
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="F3"
+            app:keycode="61"
+            app:keytype="k" />
+
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="F4"
+            app:keycode="62"
+            app:keytype="k" />
+
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="F5"
+            app:keycode="63"
+            app:keytype="k" />
+
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="F6"
+            app:keycode="64"
+            app:keytype="k" />
+
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="F7"
+            app:keycode="65"
+            app:keytype="k" />
+
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="F8"
+            app:keycode="66"
+            app:keytype="k" />
+
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="F9"
+            app:keycode="67"
+            app:keytype="k" />
+
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="F10"
+            app:keycode="68"
+            app:keytype="k" />
+        
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="F11"
+            app:keycode="87"
+            app:keytype="k" />
+
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="F12"
+            app:keycode="88"
+            app:keytype="k" />
+
+    </LinearLayout>
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="13">
+
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="`"
+            app:keycode="1"
+            app:keytype="k" />
+
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="1"
+            app:keycode="2"
+            app:keytype="k" />
+
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="2"
+            app:keycode="3"
+            app:keytype="k" />
+
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="3"
+            app:keycode="4"
+            app:keytype="k" />
+
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="4"
+            app:keycode="5"
+            app:keytype="k" />
+
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="5"
+            app:keycode="6"
+            app:keytype="k" />
+
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="6"
+            app:keycode="7"
+            app:keytype="k" />
+
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="7"
+            app:keycode="8"
+            app:keytype="k" />
+
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="8"
+            app:keycode="9"
+            app:keytype="k" />
+
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="9"
+            app:keycode="10"
+            app:keytype="k" />
+
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="0"
+            app:keycode="11"
+            app:keytype="k" />
+        
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="-"
+            app:keycode="12"
+            app:keytype="k" />
+        
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="="
+            app:keycode="13"
+            app:keytype="k" />
+
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="&lt;-"
+            app:keycode="14"
+            app:keytype="k" />
+
+    </LinearLayout>
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="13">
+
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Tab"
+            app:keycode="15"
+            app:keytype="k" />
+
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Q"
+            app:keycode="16"
+            app:keytype="k" />
+
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="W"
+            app:keycode="17"
+            app:keytype="k" />
+
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="E"
+            app:keycode="18"
+            app:keytype="k" />
+
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="R"
+            app:keycode="19"
+            app:keytype="k" />
+
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="T"
+            app:keycode="20"
+            app:keytype="k" />
+
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Y"
+            app:keycode="21"
+            app:keytype="k" />
+
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="U"
+            app:keycode="22"
+            app:keytype="k" />
+
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="I"
+            app:keycode="23"
+            app:keytype="k" />
+
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="O"
+            app:keycode="24"
+            app:keytype="k" />
+
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="P"
+            app:keycode="25"
+            app:keytype="k" />
+        
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="["
+            app:keycode="26"
+            app:keytype="k" />
+        
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="]"
+            app:keycode="27"
+            app:keytype="k" />
+
+    </LinearLayout>
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="13">
+
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.96"
+            android:text="C.lock"
+            app:keycode="58"
+            app:keytype="k" />
+
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="A"
+            app:keycode="30"
+            app:keytype="k" />
+
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="S"
+            app:keycode="31"
+            app:keytype="k" />
+
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="D"
+            app:keycode="32"
+            app:keytype="k" />
+
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="F"
+            app:keycode="33"
+            app:keytype="k" />
+
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="G"
+            app:keycode="34"
+            app:keytype="k" />
+
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="H"
+            app:keycode="35"
+            app:keytype="k" />
+
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="J"
+            app:keycode="36"
+            app:keytype="k" />
+
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="K"
+            app:keycode="37"
+            app:keytype="k" />
+
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="L"
+            app:keycode="38"
+            app:keytype="k" />
+
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text=";"
+            app:keycode="39"
+            app:keytype="k" />
+        
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="'"
+            app:keycode="40"
+            app:keytype="k" />
+        
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="\"
+            app:keycode="41"
+            app:keytype="k" />
+        
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.92"
+            android:text="Enter"
+            app:keycode="28"
+            app:keytype="k" />
+
+    </LinearLayout>
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="13">
+
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.95"
+            android:text="Shift"
+            app:keycode="42"
+            app:keytype="k" />
+
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="\"
+            app:keycode="43"
+            app:keytype="k" />
+
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Z"
+            app:keycode="44"
+            app:keytype="k" />
+        
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="X"
+            app:keycode="45"
+            app:keytype="k" />
+
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="C"
+            app:keycode="46"
+            app:keytype="k" />
+
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="V"
+            app:keycode="47"
+            app:keytype="k" />
+
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="B"
+            app:keycode="48"
+            app:keytype="k" />
+
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="N"
+            app:keycode="49"
+            app:keytype="k" />
+
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="M"
+            app:keycode="50"
+            app:keytype="k" />
+
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text=","
+            app:keycode="66"
+            app:keytype="k" />
+
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="."
+            app:keycode="67"
+            app:keytype="k" />
+
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="/"
+            app:keycode="68"
+            app:keytype="k" />
+        
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.90"
+            android:text="Shift"
+            app:keycode="54"
+            app:keytype="k" />
+
+    </LinearLayout>
+    
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="13">
+
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Ctrl"
+            app:keycode="29"
+            app:keytype="k" />
+
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Alt"
+            app:keycode="56"
+            app:keytype="k" />
+
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.6"
+            android:text=" "
+            app:keycode="57"
+            app:keytype="k" />
+
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Alt"
+            app:keycode="62"
+            app:keytype="k" />
+
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Ctrl"
+            app:keycode="63"
+            app:keytype="k" />
+
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Hme"
+            app:keycode="102"
+            app:keytype="k" />
+
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="End"
+            app:keycode="107"
+            app:keytype="k" />
+        
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Pgup"
+            app:keycode="104"
+            app:keytype="k" />
+
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Pgdn"
+            app:keycode="109"
+            app:keytype="k" />
+        
+        <com.androtux.TouchKey
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Del"
+            app:keycode="111"
+            app:keytype="k" />
+
+    </LinearLayout>
+    
+    
+</LinearLayout>
