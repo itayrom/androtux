@@ -18,11 +18,6 @@
 
 package com.androtux;
 
-import android.app.AlertDialog;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothSocket;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -31,15 +26,11 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 public class MainActivity extends FragmentActivity implements SensorEventListener {
-	private static final int REQUEST_ENABLE_BT = 10;
 	private static boolean _axis;
 	
 	private SensorManager _sManager;
-	private BluetoothSocket _btSocket;
-	private BluetoothAdapter _btAdapter;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,38 +38,9 @@ public class MainActivity extends FragmentActivity implements SensorEventListene
         setContentView(R.layout.activity_main);
         
         CommunicationHandler cHandler = CommunicationHandler.getInstance();
-        
-        // initialize bluetooth
+        cHandler.setActivity(this);
+        cHandler.initialize();
 		
-        _btAdapter = BluetoothAdapter.getDefaultAdapter();
-		if (_btAdapter == null) {
-			cHandler.setIsBluetooth(false);
-		} else {
-			if (!_btAdapter.isEnabled()) {
-			    Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-			    startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-			}
-			
-			cHandler.setIsBluetooth(true);
-		    cHandler.setBluetoothAdapter(_btAdapter);
-		}
-        
-        
-        if (!cHandler.connect("192.168.192.54", 3490)) {
-        	AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(this);
-
-        	dlgAlert.setMessage("Cound not connect to server");
-        	dlgAlert.setTitle("Androtux");
-        	dlgAlert.setCancelable(true);
-        	dlgAlert.setPositiveButton("Ok",
-        		    new DialogInterface.OnClickListener() {
-        		        public void onClick(DialogInterface dialog, int which) {
-        		        	System.exit(0); 
-        		        }
-        		    });
-        	dlgAlert.create().show();
-        }
-        
         _sManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         
         _axis = false;
@@ -87,7 +49,6 @@ public class MainActivity extends FragmentActivity implements SensorEventListene
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
@@ -95,6 +56,7 @@ public class MainActivity extends FragmentActivity implements SensorEventListene
     @Override
     protected void onResume() {  
         super.onResume();  
+        CommunicationHandler.getInstance().connect();
         _sManager.registerListener(this, _sManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),SensorManager.SENSOR_DELAY_FASTEST);  
     }  
   
@@ -106,7 +68,6 @@ public class MainActivity extends FragmentActivity implements SensorEventListene
     
     @Override
 	public void onAccuracyChanged(Sensor sensor, int accuracy) {
-		// TODO Auto-generated method stub
 		
 	}
     
@@ -129,7 +90,13 @@ public class MainActivity extends FragmentActivity implements SensorEventListene
         }
         return super.onOptionsItemSelected(item);
     }
-
+    
+    @Override
+	protected void onPause() {
+		CommunicationHandler.getInstance().disconnect();
+		super.onPause();
+	}
+    
 	@Override
 	protected void onDestroy() {
 		CommunicationHandler.getInstance().disconnect();
@@ -138,9 +105,5 @@ public class MainActivity extends FragmentActivity implements SensorEventListene
 	
 	public static void setAxis(boolean stat) {
 		_axis = stat;
-	}
-	
-	public void playAA(View view) {
-		CommunicationHandler.getInstance().sendData("c");
 	}
 }

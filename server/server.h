@@ -55,6 +55,8 @@
 #define MOUSE_KEY 'm'
 #define GAMEPAD_KEY 'g'
 
+#define log(str) printf("> %s\n", str)
+
 int _sockfd, _newfd;
 struct addrinfo hints, *servinfo, *p;
 struct sockaddr_storage _remoteAddr;
@@ -65,24 +67,21 @@ char _remoteIP[INET6_ADDRSTRLEN];
 int rv;
 int _numbytes;
 char _recvBuffer[BUFFER_SIZE];
-char _sendBuffer[BUFFER_SIZE];
 
 void sigchld_handler(int s);
 void* get_in_addr(struct sockaddr *sa);
 
-void handleWireless();
-void handleBlutooth();
-
-int serverSend(client* c, const void* msg, int len, unsigned int flags);
-int serverReceive(client* c, void* buf, int len, unsigned int flags);
-
-int processCommandLineArgs(int argc, char* argv[]);
+int initWireless();
+int initBlutooth();
+int handleWireless();
+int handleBlutooth();
+int handleInput(client *client, char *input);
+void handleWirelessClients();
+void handleBluetoothClients();
 
 void handleClient_select();
 
 int _clientId, _eventFd, _x, _y, _scroll;
 char *_tokenP;
-
-int isWireless, isBluetooth;
 
 #endif

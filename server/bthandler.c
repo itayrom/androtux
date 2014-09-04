@@ -27,7 +27,7 @@ int initBtSocket() {
 
 	bind(_btSockFd, (struct sockaddr*)&_locAddr, sizeof(_locAddr));
 
-	listen(_btSockFd, BACKLOG);
+	listen(_btSockFd, 1);//BACKLOG);
 
 	return 1;
 }
@@ -35,7 +35,8 @@ int initBtSocket() {
 sdp_session_t* register_service() {
 	int err;
 	sdp_session_t *session;
-	uint8_t service_uuid_int[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0xad, 0xad};
+	uint8_t service_uuid_int[] = {0x07,0x29,0x3d,0xb4,0xa3, 0x23, 0x4e, 0x07,0x8b, 0x8b,0x25,0x0b,0x34,0x0e, 0x42, 0xa4};
+	//uint8_t service_uuid_int[] = {0x73, 0x35, 0xb5, 0xf2, 0xec, 0x43, 0x4e, 0x53, 0x84, 0x19, 0x07, 0x65, 0x7a, 0x9a, 0x8d, 0x52};
 	uint8_t rfcomm_channel = SVC_CHANNEL;
 	uuid_t root_uuid, l2cap_uuid, rfcomm_uuid, svc_uuid;
 
@@ -90,4 +91,6 @@ sdp_session_t* register_service() {
 	sdp_list_free(rfcomm_list, 0);
 	sdp_list_free(root_list, 0);
 	sdp_list_free(access_proto_list, 0);
+
+	return session;
 }

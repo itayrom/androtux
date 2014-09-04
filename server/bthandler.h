@@ -26,14 +26,16 @@
 
 #include "server.h"
 
-#define SVC_CHANNEL 15
+#define SVC_CHANNEL 1
 #define SVC_NAME "AndroTux"
 #define SVC_DESC "Androtux bluetooth server"
 #define SVC_PROV "Itay Rom, Tal Sabo"
 
 int initBtSocket();
 sdp_session_t* register_service();
+
 struct sockaddr_rc _locAddr, _remAddr;
+socklen_t _opt;
 int _btSockFd;
 sdp_session_t *sdp_session;
 

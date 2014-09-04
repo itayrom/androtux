@@ -31,36 +31,34 @@ import android.widget.TextView;
 
 public class ClientArrayAdapter extends ArrayAdapter<BluetoothClient>{
 	private Context _context;
-	private int _layoutResourceId;
-	private BluetoothClient[] _clients;
+	private int _resource;
 	
 	public ClientArrayAdapter(Context context, int resource) {
 		super(context, resource);
+		
+		_resource = resource;
+        _context = context;
 	}
 	
-	public ClientArrayAdapter(Context mContext, int layoutResourceId, BluetoothClient[] clients) {
-
-        super(mContext, layoutResourceId, clients);
-
-        _layoutResourceId = layoutResourceId;
-        _context = mContext;
-        _clients = clients;
-    }
-
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if(convertView==null){
             LayoutInflater inflater = ((Activity)_context).getLayoutInflater();
-            convertView = inflater.inflate(_layoutResourceId, parent, false);
+            convertView = inflater.inflate(R.layout.simple_list_item, parent, false);
         }
 
-        BluetoothClient objectItem = _clients[position];
+        BluetoothClient item = getItem(position);
 
         TextView textViewItem = (TextView) convertView.findViewById(R.id.textViewItem);
-        textViewItem.setText(objectItem.getName() + "\n" + objectItem.getAddress());
-        textViewItem.setTag(objectItem.getAddress());
+        textViewItem.setText(item.getName() + "\n" + item.getAddress());
+        textViewItem.setTag(item.getAddress());
 
         return convertView;
 
+    }
+    
+    @Override
+    public void add(BluetoothClient c) {
+    	super.add(c);
     }
 }

@@ -3,3 +3,9 @@
 1409824651876	Delete element
 1409824657057	Delete element
 1409824671468	Delete element
+1409825306405	Rename resource 'bluetooth_list_item.xml'
+1409827423585	Rename local variable 'objectItem'
+1409827502125	Rename field '_layoutResourceId'
+1409829561303	Rename type 'ClientThread'
+1409829577156	Rename type 'ConnectThread'
+1409832850450	Rename type 'BluetoothThread'

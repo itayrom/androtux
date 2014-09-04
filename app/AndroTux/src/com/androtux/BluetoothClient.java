@@ -42,5 +42,9 @@ public class BluetoothClient {
 	public String getAddress() {
 		return _address;
 	}
+	
+	public String toString() {
+		return _name + "\n" + _address;
+	}
 
 }
