@@ -92,9 +92,9 @@ public class Touchpad extends Button {
     		}else{
     			offsetY = y - _y;
     			
-    			if (Math.abs(offsetX) > 0.1 && Math.abs(offsetY) > 0.1) {
+    			//if (Math.abs(offsetX) > 0.1 && Math.abs(offsetY) > 0.1) {
     	    		str = "r" + offsetX + "," + offsetY;
-        		}
+        		//}
     		}
     		
     		CommunicationHandler.getInstance().sendData(str);

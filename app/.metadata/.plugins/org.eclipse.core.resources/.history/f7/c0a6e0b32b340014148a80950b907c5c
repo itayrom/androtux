@@ -1,0 +1,6 @@
+package com.androtux;
+
+public enum ConnectionType {
+	WIRELESS,
+	BLUETOOTH
+}

@@ -103,14 +103,12 @@ public class GamepadTouchKey extends AbstractKey {
 
 	@Override
 	public void onRelease() {
-		// TODO Auto-generated method stub
-		
+		CommunicationHandler.getInstance().sendData("k" + getKeyType() + "0" + getKeyCode());
 	}
 
 	@Override
 	public void onPress() {
-		// TODO Auto-generated method stub
-		
+		CommunicationHandler.getInstance().sendData("k" + getKeyType() + "1" + getKeyCode());
 	}
 	
 	// setters/getters

@@ -18,20 +18,6 @@
 
 #include "bthandler.h"
 
-int initBtSocket() {
-	_btSockFd = socket(AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM);
-
-	_locAddr.rc_family = AF_BLUETOOTH;
-	_locAddr.rc_bdaddr = *BDADDR_ANY;
-	_locAddr.rc_channel = (uint8_t)SVC_CHANNEL;
-
-	bind(_btSockFd, (struct sockaddr*)&_locAddr, sizeof(_locAddr));
-
-	listen(_btSockFd, 1);//BACKLOG);
-
-	return 1;
-}
-
 sdp_session_t* register_service() {
 	int err;
 	sdp_session_t *session;

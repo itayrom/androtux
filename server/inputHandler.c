@@ -199,7 +199,6 @@ void handleEvents(int fd, struct input_event events[], int n) {
 	int i;
 	struct input_event event;
 
-//	printf("IN>> %d, %d\n", events[0].code, events[1].code);
 	memset(&event, 0, sizeof(event));
 	gettimeofday(&event.time, NULL);
 	
@@ -208,7 +207,7 @@ void handleEvents(int fd, struct input_event events[], int n) {
 		event.code = events[i].code;
 		event.value = events[i].value;
 		write(fd, &event, sizeof(event));
-	}	
+	}
 
 	event.type = EV_SYN;
 	event.code = SYN_REPORT;

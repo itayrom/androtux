@@ -29,8 +29,7 @@ void initializeClientsArray() {
 }
 
 client* createClient(int fd) {
-	int devId;
-	int i, j;
+	int i;
 
 	for (i = 0; i < MAX_DEVICES; i++) {
 		if (_clients[i] == NULL) {
@@ -69,26 +68,3 @@ client* getClient(int fd) {
 
 	return NULL;
 }
-
-client* getClientByAddress(struct sockaddr* addr) {
-	int i;
-	client* current;
-	char paramAddrString[INET6_ADDRSTRLEN];
-	char currentAddrString[INET6_ADDRSTRLEN];
-	
-	inet_ntop(AF_INET, get_in_addr(addr), paramAddrString, sizeof(paramAddrString));
-
-	for (i = 0; i < MAX_DEVICES; i++) {
-		if(_clients[i] != NULL) {
-			inet_ntop(AF_INET, get_in_addr(_clients[i]->addr), currentAddrString, sizeof(currentAddrString));
-			
-			if (strcmp(currentAddrString, paramAddrString) == 0) {
-				return _clients[i];
-				break;
-			}
-		}
-	}
-
-	return NULL;
-}
-

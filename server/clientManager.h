@@ -50,6 +50,5 @@ void initializeClientsArray();
 client* createClient(int fd);
 int removeClient(int fd);
 client* getClient(int fd);
-client* getClientByAddress(struct sockaddr* addr);
 
 #endif
