@@ -68,7 +68,7 @@ int main(int argc, char *argv[]) {
 							if (i == _sockfd)
 								inet_ntop(_remoteAddr.ss_family, get_in_addr((struct sockaddr*)&_remoteAddr), _remoteIP, INET6_ADDRSTRLEN);
 							else
-								ba2str(&_btRemoteAddr.rc_bdaddr, _remoteIp);
+								ba2str(&_btRemoteAddr.rc_bdaddr, _remoteIP);
 								
 							printf("new connection from %s on socket %d\n", _remoteIP, _newfd);
 							

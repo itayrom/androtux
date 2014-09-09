@@ -57,7 +57,7 @@
 
 #define log(str) printf("> %s\n", str)
 
-int _sockfd, _newfd;
+int _sockfd;
 struct addrinfo hints, *servinfo, *p;
 struct sockaddr_storage _remoteAddr;
 socklen_t _addrLength;

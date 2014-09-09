@@ -92,6 +92,7 @@ int main(int argc, char *argv[]) {
 							}
 							
 							handleInput(client, _recvBuffer);
+							break;
 						} else { // connection closed
 							close_conn:
 							if (_numbytes == 0) { // initiated by client
