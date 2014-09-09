@@ -34,7 +34,7 @@
 sdp_session_t* register_service();
 
 int _btSockFd;
-struct sockaddr_rc _locAddr, _remAddr;
+struct sockaddr_rc _btLocAddr, _btRemoteAddr;
 socklen_t _opt;
 sdp_session_t *sdp_session;
 

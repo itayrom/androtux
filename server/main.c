@@ -25,7 +25,7 @@ int main(int argc, char *argv[]) {
 	int fdmax;
 	client *newClient, *client;
 	
-	_opt = sizeof(_remAddr);
+	_opt = sizeof(_btRemoteAddr);
 	_addrLength = sizeof(_remoteAddr);
 
 	printf("AndroTux Server\n");
@@ -52,7 +52,7 @@ int main(int argc, char *argv[]) {
 						if (i == _sockfd)
 							_newfd = accept(i, (struct sockaddr*)&_remoteAddr, &_addrLength);
 						else
-							_newfd = accept(i, (struct sockaddr*)&_remoteAddr, &_opt);
+							_newfd = accept(i, (struct sockaddr*)&_btRemoteAddr, &_opt);
 
 						if (_newfd != -1) {
 							if ((newClient = createClient(_newfd)) == NULL) {
@@ -64,7 +64,12 @@ int main(int argc, char *argv[]) {
 							FD_SET(_newfd, &master);
 							fdmax = (_newfd > fdmax) ? _newfd : fdmax;
 							
-							inet_ntop(_remoteAddr.ss_family, get_in_addr((struct sockaddr*)&_remoteAddr), _remoteIP, INET6_ADDRSTRLEN);
+							// get a string representation of the client's address into _remoteIp
+							if (i == _sockfd)
+								inet_ntop(_remoteAddr.ss_family, get_in_addr((struct sockaddr*)&_remoteAddr), _remoteIP, INET6_ADDRSTRLEN);
+							else
+								ba2str(&_btRemoteAddr.rc_bdaddr, _remoteIP);
+								
 							printf("new connection from %s on socket %d\n", _remoteIP, _newfd);
 							
 							if (newClient == NULL || setup_uinput_device(newClient) < 0) {
@@ -166,21 +171,21 @@ int initWireless() {
 }
 
 int initBluetooth() {
-	memset(&_locAddr, 0, sizeof _locAddr);
-	memset(&_remAddr, 0, sizeof _remAddr);
-	_opt = sizeof(_remAddr);
+	memset(&_btLocAddr, 0, sizeof _btLocAddr);
+	memset(&_btRemoteAddr, 0, sizeof _btRemoteAddr);
+	_opt = sizeof(_btRemoteAddr);
 	
 	sdp_session = register_service();
 
-	_locAddr.rc_family = AF_BLUETOOTH;
-	_locAddr.rc_bdaddr = *BDADDR_ANY;
-	_locAddr.rc_channel = (uint8_t)SVC_CHANNEL;
+	_btLocAddr.rc_family = AF_BLUETOOTH;
+	_btLocAddr.rc_bdaddr = *BDADDR_ANY;
+	_btLocAddr.rc_channel = (uint8_t)SVC_CHANNEL;
 
 	if ((_btSockFd = socket(AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM)) == -1) {
 		perror("bluetooth: socket");
 	}
 
-	if (bind(_btSockFd, (struct sockaddr*)&_locAddr, sizeof(_locAddr)) == -1) {
+	if (bind(_btSockFd, (struct sockaddr*)&_btLocAddr, sizeof(_btLocAddr)) == -1) {
 		close(_btSockFd);
 		perror("bluetooth: bind");
 	}

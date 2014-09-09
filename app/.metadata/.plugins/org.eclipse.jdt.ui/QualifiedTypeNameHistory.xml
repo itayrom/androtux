@@ -25,7 +25,11 @@
 <fullyQualifiedTypeName name="android.app.AlertDialog"/>
 <fullyQualifiedTypeName name="android.widget.ArrayAdapter"/>
 <fullyQualifiedTypeName name="com.androtux.R.layout"/>
-<fullyQualifiedTypeName name="com.androtux.R.id"/>
 <fullyQualifiedTypeName name="java.util.ArrayList"/>
 <fullyQualifiedTypeName name="android.widget.ListView"/>
+<fullyQualifiedTypeName name="java.io.OutputStream"/>
+<fullyQualifiedTypeName name="android.widget.EditText"/>
+<fullyQualifiedTypeName name="com.androtux.R.id"/>
+<fullyQualifiedTypeName name="com.androtux.ConnectionType"/>
+<fullyQualifiedTypeName name="java.lang.Short"/>
 </qualifiedTypeNameHistroy>

@@ -39,6 +39,7 @@ public class ToggleButton extends View implements IToggleable {
 	private Bitmap _icon;
 	private Rect _rect;
 	private int _bgColor, _onColor, _offColor;
+	private boolean _isTab;
 	
 	private List<Runnable> _ops;
 	private List<IToggleable> _listeners;
@@ -71,6 +72,7 @@ public class ToggleButton extends View implements IToggleable {
 		TypedArray a=getContext().obtainStyledAttributes(attrs, R.styleable.ToggleButton);
 		_offColor = a.getColor(R.styleable.ToggleButton_offColor, Color.RED);
 		_onColor = a.getColor(R.styleable.ToggleButton_onColor, Color.GREEN);
+		_isTab = a.getBoolean(R.styleable.ToggleButton_isTab, false);
 		a.recycle();
 		init();
 	}
@@ -81,11 +83,12 @@ public class ToggleButton extends View implements IToggleable {
     	
     	switch(action) {
     	case MotionEvent.ACTION_DOWN:
-    		_pressed = ! _pressed;
+    		if (!_isTab || (_isTab && !_pressed))
+    			_pressed = ! _pressed;
+    		
     		if (_pressed) {
     			setOn();
-    		}
-    		else {
+    		} else {
     			setOff();
     		}
 			break;

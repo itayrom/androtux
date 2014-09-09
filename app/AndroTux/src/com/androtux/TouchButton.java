@@ -28,12 +28,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Paint.Style;
-import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
-import android.view.View;
-import android.widget.Button;
 
 public class TouchButton extends AbstractKey {
 	private Paint _paint;
@@ -41,6 +37,7 @@ public class TouchButton extends AbstractKey {
 	private int _keyColor;
 	private int _growFactor;
 	private RectF _rect;
+	private boolean _isEnabled;
 	
 	private List<Runnable> _ops;
 	
@@ -69,29 +66,43 @@ public class TouchButton extends AbstractKey {
 		init();
 		TypedArray a=getContext().obtainStyledAttributes(attrs, R.styleable.TouchKey);
 		_text = a.getString(R.styleable.TouchKey_android_text);
+		_isEnabled = a.getBoolean(R.styleable.TouchButton_enabled, true);
 		a.recycle();
 	}
 	
 	@Override
 	public void drawKey(Canvas canvas) {
-		_rect = new RectF(2, 2, getWidth()-2, getHeight()-2);
-		_paint.setStyle(Style.FILL_AND_STROKE);
-		
-		/*_paint.setColor(Color.BLUE);
-		canvas.drawRect(0, 0, getWidth(), getHeight(), _paint);*/
-		
-		_paint.setColor(Color.GRAY);
-		canvas.drawRoundRect(_rect, 10, 10, _paint);
-		
-		_paint.setColor(_keyColor);
-		_rect = new RectF(5 - _growFactor, 5 - _growFactor, getWidth()-(5 - _growFactor), getHeight()-(5 - _growFactor));
-		canvas.drawRoundRect(_rect, 10, 10, _paint);
-		//canvas.drawRect(5 - _growFactor, 5 - _growFactor, getWidth()-(5 - _growFactor), getHeight()-(5 - _growFactor), _paint);
-		
-		_paint.setColor(Color.BLACK);
-		_paint.setTextAlign(Align.CENTER);
-		_paint.setTextSize(18 + _growFactor);
-		canvas.drawText(_text, getWidth()/2, getHeight()/2 + 7, _paint);
+		if (_isEnabled) {
+			_rect = new RectF(2, 2, getWidth()-2, getHeight()-2);
+			_paint.setStyle(Style.FILL_AND_STROKE);
+			
+			_paint.setColor(Color.GRAY);
+			canvas.drawRoundRect(_rect, 10, 10, _paint);
+			
+			_paint.setColor(_keyColor);
+			_rect = new RectF(5 - _growFactor, 5 - _growFactor, getWidth()-(5 - _growFactor), getHeight()-(5 - _growFactor));
+			canvas.drawRoundRect(_rect, 10, 10, _paint);
+			
+			_paint.setColor(Color.BLACK);
+			_paint.setTextAlign(Align.CENTER);
+			_paint.setTextSize(18 + _growFactor);
+			canvas.drawText(_text, getWidth()/2, getHeight()/2 + 7, _paint);
+		} else {
+			_rect = new RectF(2, 2, getWidth()-2, getHeight()-2);
+			_paint.setStyle(Style.FILL_AND_STROKE);
+			
+			_paint.setColor(Color.GRAY);
+			canvas.drawRoundRect(_rect, 10, 10, _paint);
+			
+			_paint.setColor(Color.GRAY);
+			_rect = new RectF(5, 5, getWidth()-5, getHeight()-5);
+			canvas.drawRoundRect(_rect, 10, 10, _paint);
+			
+			_paint.setColor(Color.BLACK);
+			_paint.setTextAlign(Align.CENTER);
+			_paint.setTextSize(18 );
+			canvas.drawText(_text, getWidth()/2, getHeight()/2 + 7, _paint);
+		}
 	}
 	
 	private void run() {
@@ -124,8 +135,17 @@ public class TouchButton extends AbstractKey {
 
 	@Override
 	public void onPress() {
-		run();
-		
+		if (_isEnabled)
+			run();
+	}
+	
+	public void setEnabled(boolean e) {
+		_isEnabled = e;
+		this.invalidate();
+	}
+	
+	public boolean getEnabled() {
+		return _isEnabled;
 	}
 
 }

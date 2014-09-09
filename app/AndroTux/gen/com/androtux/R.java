@@ -18,6 +18,22 @@ theme attribute (in the form
 containing a value of this type.
          */
         public static final int color=0x7f010002;
+        /** <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int enabled=0x7f010006;
+        /** <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int isTab=0x7f010005;
         /** <p>Must be a string value, using '\\;' to escape characters such as '\\n' or '\\uxxxx' for a unicode character.
 <p>This may also be a reference to a resource (in the form
 "<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
@@ -75,30 +91,38 @@ containing a value of this type.
         public static final int wheel=0x7f020007;
     }
     public static final class id {
-        public static final int GamepadA=0x7f080008;
-        public static final int GamepadB=0x7f080007;
-        public static final int GamepadLeft=0x7f08000a;
-        public static final int TouchKey01=0x7f080009;
-        public static final int action_settings=0x7f080017;
-        public static final int btnConnectWireless=0x7f080010;
-        public static final int gamepadX=0x7f080005;
-        public static final int gamepadY=0x7f080006;
-        public static final int imageButton1=0x7f08000d;
+        public static final int GamepadA=0x7f080010;
+        public static final int GamepadB=0x7f08000f;
+        public static final int GamepadLeft=0x7f080012;
+        public static final int TouchKey01=0x7f080011;
+        public static final int action_settings=0x7f08001f;
+        public static final int btnConnectWireless=0x7f080018;
+        public static final int gamepadX=0x7f08000d;
+        public static final int gamepadY=0x7f08000e;
+        public static final int imageButton1=0x7f080015;
+        public static final int imageView1=0x7f080003;
         public static final int item_fragment=0x7f080001;
-        public static final int lvPaired=0x7f08000e;
+        public static final int lvPaired=0x7f080016;
         public static final int tabbar_fragment=0x7f080000;
-        public static final int tbAbout=0x7f080015;
-        public static final int tbGamepad=0x7f080013;
-        public static final int tbKeyboard=0x7f080011;
-        public static final int tbMouse=0x7f080012;
-        public static final int tbSettings=0x7f080014;
-        public static final int textViewItem=0x7f080016;
-        public static final int touchJoystick1=0x7f080004;
-        public static final int touchKey1=0x7f080003;
-        public static final int touchKey2=0x7f080002;
-        public static final int touchpad=0x7f08000c;
-        public static final int txtWirelessIp=0x7f08000f;
-        public static final int wheelToggleButton1=0x7f08000b;
+        public static final int tbAbout=0x7f08001d;
+        public static final int tbGamepad=0x7f08001b;
+        public static final int tbKeyboard=0x7f080019;
+        public static final int tbMouse=0x7f08001a;
+        public static final int tbSettings=0x7f08001c;
+        public static final int textView1=0x7f080004;
+        public static final int textView2=0x7f080002;
+        public static final int textView3=0x7f080007;
+        public static final int textView4=0x7f080009;
+        public static final int textView5=0x7f080005;
+        public static final int textView6=0x7f080006;
+        public static final int textView7=0x7f080008;
+        public static final int textViewItem=0x7f08001e;
+        public static final int touchJoystick1=0x7f08000c;
+        public static final int touchKey1=0x7f08000b;
+        public static final int touchKey2=0x7f08000a;
+        public static final int touchpad=0x7f080014;
+        public static final int txtWirelessIp=0x7f080017;
+        public static final int wheelToggleButton1=0x7f080013;
     }
     public static final class layout {
         public static final int activity_main=0x7f030000;
@@ -116,9 +140,18 @@ containing a value of this type.
         public static final int main=0x7f070000;
     }
     public static final class string {
-        public static final int action_settings=0x7f050002;
+        public static final int about_app_name=0x7f050005;
+        public static final int about_app_version=0x7f050006;
+        public static final int about_by=0x7f050007;
+        public static final int about_itay=0x7f050008;
+        public static final int about_join=0x7f05000a;
+        public static final int about_link=0x7f05000b;
+        public static final int about_tal=0x7f050009;
+        public static final int action_settings=0x7f050001;
         public static final int app_name=0x7f050000;
-        public static final int settings=0x7f050001;
+        public static final int connecting=0x7f050004;
+        public static final int error_alertdialog_title=0x7f050002;
+        public static final int must_connect_first_msg=0x7f050003;
     }
     public static final class style {
         /** 
@@ -155,15 +188,31 @@ containing a value of this type.
            <colgroup align="left" />
            <colgroup align="left" />
            <tr><th>Attribute</th><th>Description</th></tr>
+           <tr><td><code>{@link #ToggleButton_isTab com.androtux:isTab}</code></td><td></td></tr>
            <tr><td><code>{@link #ToggleButton_offColor com.androtux:offColor}</code></td><td></td></tr>
            <tr><td><code>{@link #ToggleButton_onColor com.androtux:onColor}</code></td><td></td></tr>
            </table>
+           @see #ToggleButton_isTab
            @see #ToggleButton_offColor
            @see #ToggleButton_onColor
          */
         public static final int[] ToggleButton = {
-            0x7f010003, 0x7f010004
+            0x7f010003, 0x7f010004, 0x7f010005
         };
+        /**
+          <p>This symbol is the offset where the {@link com.androtux.R.attr#isTab}
+          attribute's value can be found in the {@link #ToggleButton} array.
+
+
+          <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name com.androtux:isTab
+        */
+        public static final int ToggleButton_isTab = 2;
         /**
           <p>This symbol is the offset where the {@link com.androtux.R.attr#offColor}
           attribute's value can be found in the {@link #ToggleButton} array.
@@ -194,6 +243,33 @@ containing a value of this type.
           @attr name com.androtux:onColor
         */
         public static final int ToggleButton_onColor = 0;
+        /** Attributes that can be used with a TouchButton.
+           <p>Includes the following attributes:</p>
+           <table>
+           <colgroup align="left" />
+           <colgroup align="left" />
+           <tr><th>Attribute</th><th>Description</th></tr>
+           <tr><td><code>{@link #TouchButton_enabled com.androtux:enabled}</code></td><td></td></tr>
+           </table>
+           @see #TouchButton_enabled
+         */
+        public static final int[] TouchButton = {
+            0x7f010006
+        };
+        /**
+          <p>This symbol is the offset where the {@link com.androtux.R.attr#enabled}
+          attribute's value can be found in the {@link #TouchButton} array.
+
+
+          <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name com.androtux:enabled
+        */
+        public static final int TouchButton_enabled = 0;
         /** Attributes that can be used with a TouchKey.
            <p>Includes the following attributes:</p>
            <table>

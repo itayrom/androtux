@@ -51,10 +51,14 @@ public class CommunicationHandler {
 	private BluetoothDevice _btDevice;
 	private ConnectionType _connectionType;
 	private Activity _activity;
+	private Thread _btThread, _wirelessThread, _disconnectThread;
+	
+	private SyncBoolean _lock;
 	
 	private boolean _isBluetooth;
 	
 	private CommunicationHandler() {
+		_lock = new SyncBoolean(false);
 		_isBluetooth = true;
 		_connectionType = ConnectionType.NONE;
 	}
@@ -68,6 +72,7 @@ public class CommunicationHandler {
 	}
 	
 	public void initialize() {
+		// We check here to see if the device actually have bluetooth capabilities.
 		_btAdapter = BluetoothAdapter.getDefaultAdapter();
 		if (_btAdapter == null) {
 			setIsBluetooth(false);
@@ -78,37 +83,59 @@ public class CommunicationHandler {
 	}
 	
 	public boolean connect() {
+		// We don't want to make a new connection before closing the previous one, of course.
+		disconnect();
+		
+		// There are better ways to do this, but we need to let the server finish disconnecting prior to making a new connection.
+		// The reason is that if the operations are made too close in time, the server might create a new connection before closing the previous one,
+		// creating a new Androtux(i+1) controller instead of replacing the Androtux(i) one.
+		//SystemClock.sleep(1000);
+		
+		//_lock.setVal(true);
+		_lock.setVal(true);
+		
 		switch (_connectionType) {
 		case WIRELESS:
 			try {
-				if (_socket != null &&_socket.isConnected())
-					_socket.close();
-				if (_btSocket != null &&_btSocket.isConnected())
-					_btSocket.close();
 				_serverAddr = InetAddress.getByName(_ip);
-				new Thread(new WirelessThread()).start();
+				WirelessThread t = new WirelessThread();
+				_wirelessThread = new Thread(t);
+				_wirelessThread.start();
+				
+				synchronized (_lock) {
+					_lock.wait();
+					_lock.setVal(false);
+				}
 			} catch (UnknownHostException e) {
 				e.printStackTrace();
 				return false;
-			} catch (IOException e) {
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			break;
 		case BLUETOOTH:
-			try {
-				if (_socket != null &&_socket.isConnected())
-					_socket.close();
-				if (_btSocket != null &&_btSocket.isConnected())
-					_btSocket.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			if (!getIsBluetooth())
+				return false;
 			
 			if (!_btAdapter.isEnabled()) {
 			    Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
 			    _activity.startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
 			}
-			new Thread(new BluetoothThread()).start();
+			
+			BluetoothThread t = new BluetoothThread();
+			_btThread = new Thread(t);
+			_btThread.start();
+			
+			synchronized (_lock) {
+				try {
+					_lock.wait();
+					_lock.setVal(false);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+			
 			break;
 		case NONE:
 			return false;
@@ -118,28 +145,42 @@ public class CommunicationHandler {
 	}
 	
 	public boolean disconnect() {
-		switch (_connectionType) {
-		case WIRELESS:
+		_lock.setVal(true);
+		
+		DisconnectThread t = new DisconnectThread();
+		_disconnectThread = new Thread(t);
+		_disconnectThread.start();
+		
+		synchronized (_lock) {
 			try {
-				if (_socket != null)
-					_socket.close();
-			} catch (IOException e) {
+				_lock.wait();
+				_lock.setVal(false);
+			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			break;
-		case BLUETOOTH:
-			try {
-				if (_btSocket != null)
-					_btSocket.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			break;
-		case NONE:
-			break;
+			
 		}
+		
+		/*if (_socket != null) {
+			try {
+				_socket.close();
+				while (_socket.isConnected() && !_socket.isClosed()) { }
+				_socket = null;
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		if (_btSocket != null) {
+			try {
+				_btSocket.close();
+				_btSocket = null;
+			} catch (IOException e) {
+				e.printStackTrace();
+			} 
+		}*/
+		
 		return true;
 	}
 	
@@ -149,6 +190,7 @@ public class CommunicationHandler {
 			try {
 				PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(_socket.getOutputStream())), true);
 		        out.println(str);
+		        out.flush();
 	        } catch (IOException e) {
 	            e.printStackTrace();
 	            return false;
@@ -159,12 +201,11 @@ public class CommunicationHandler {
 			break;
 		case BLUETOOTH:
 			try {
-				/*PrintWriter out = new PrintWriter(new OutputStreamWriter(_btSocket.getOutputStream()));
-				out.print(str);*/
 				OutputStream out = _btSocket.getOutputStream();
 				byte[] msg = (str + " ").getBytes();
 				msg[msg.length - 1] = 0;
 				out.write(msg);
+				out.flush();
 			} catch (IOException e) {
 	            e.printStackTrace();
 	            return false;
@@ -234,26 +275,42 @@ public class CommunicationHandler {
 		_activity = activity;
 	}
 	
+	public boolean isConnected() {
+		boolean result;
+		result = ((_socket != null) ? _socket.isConnected() : false) || ((_btSocket != null) ? _btSocket.isConnected() : false);
+		return result;
+	}
 	// <<-- end of setters/getters
 	
 	class WirelessThread implements Runnable {
 	    @Override
 	    public void run() {
-
-	        try {
-	            _socket = new Socket(_serverAddr, _port);
-
-	        } catch (UnknownHostException e1) {
-	            e1.printStackTrace();
-	        } catch (IOException e1) {
-	            e1.printStackTrace();
-	        }
-
+    		try {
+    			_socket = new Socket(_serverAddr, _port);
+ 	        	//_socket = new Socket();
+ 	        	//_socket.connect(new InetSocketAddress(_serverAddr, _port));
+ 	        	
+ 	        	synchronized (_lock) {
+ 	        		while (_lock.getVal()) {
+ 	        			try {
+							_lock.wait(1000);
+							_lock.notifyAll();
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+ 	        		}
+ 				}
+ 	        	//while (!_socket.isConnected()) { }
+ 	        } catch (UnknownHostException e1) {
+ 	            e1.printStackTrace();
+ 	        } catch (IOException e1) {
+ 	            e1.printStackTrace();
+ 	        }
 	    }
 	}
 	
 	class BluetoothThread implements Runnable {
-
 		@Override
 		public void run() {
 			try {
@@ -261,6 +318,18 @@ public class CommunicationHandler {
 	        	_btSocket = _btDevice.createInsecureRfcommSocketToServiceRecord(APPUUID);
 	        	_btAdapter.cancelDiscovery();
 	            _btSocket.connect();
+	            
+	            synchronized (_lock) {
+ 	        		while (_lock.getVal()) {
+	            		try {
+							_lock.wait(1000);
+							_lock.notifyAll();
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+ 	        		}
+ 				}
 	        } catch (IOException e0) {
 	            // Unable to connect; close the socket and get out
 	            try {
@@ -269,6 +338,42 @@ public class CommunicationHandler {
 	            	e1.printStackTrace();
 	            }
 	        }
+		}
+	}
+	
+	class DisconnectThread implements Runnable {
+		@Override
+		public void run() {
+			if (_socket != null) {
+				try {
+					_socket.close();
+					while (_socket.isConnected() && !_socket.isClosed()) { }
+					_socket = null;
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			
+			if (_btSocket != null) {
+				try {
+					_btSocket.close();
+					_btSocket = null;
+				} catch (IOException e) {
+					e.printStackTrace();
+				} 
+			}
+			
+			synchronized (_lock) {
+        		while (_lock.getVal()) {
+            		try {
+						_lock.wait(1000);
+						_lock.notifyAll();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+        		}
+			}
 		}
 	}
 }

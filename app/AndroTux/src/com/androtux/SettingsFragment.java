@@ -19,14 +19,20 @@
 package com.androtux;
 
 import java.util.Set;
+
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.app.Fragment;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,7 +51,8 @@ public class SettingsFragment extends Fragment {
 	//private ClientArrayAdapter _arrayAdapter;
 	//private ArrayAdapter<BluetoothClient> _arrayAdapter;
 	private BluetoothAdapter _bluetoothAdapter;
-	CommunicationHandler _cHandler;
+	private CommunicationHandler _cHandler;
+	private TouchButton _btnConnectWireless;
 	
 	/*private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
 		@Override
@@ -85,7 +92,7 @@ public class SettingsFragment extends Fragment {
 	    
 	   /* ListView lv = (ListView)rootView.findViewById(R.id.lvDiscovered);
 	    TextView tv = new TextView(getActivity());
-        tv.setText("Poop\naa:bb:cc:dd:ee:ff");
+        tv.setText("aa:bb:cc:dd:ee:ff");
         lv.add*/
 	    
 
@@ -130,8 +137,9 @@ public class SettingsFragment extends Fragment {
 		});
 	    */
 	    
-	    TouchButton btnConnectWireless = (TouchButton)rootView.findViewById(R.id.btnConnectWireless);
-	    btnConnectWireless.addOps(new Runnable() {
+	    _btnConnectWireless = (TouchButton)rootView.findViewById(R.id.btnConnectWireless);
+	    _btnConnectWireless.setEnabled(true);
+	    _btnConnectWireless.addOps(new Runnable() {
 			@Override
 			public void run() {
                 final BroadcastReceiver mReceiver = new BroadcastReceiver() 
@@ -145,9 +153,25 @@ public class SettingsFragment extends Fragment {
                         	_cHandler.setConnectionType(ConnectionType.WIRELESS);
                         	_cHandler.setIp(ip);
                         	_cHandler.setPort(SERVER_PORT);
+                        	
+                        	Toast.makeText(getActivity(), R.string.connecting, Toast.LENGTH_LONG).show();
+                        	_btnConnectWireless.setEnabled(false);
+                        	
                         	if (!_cHandler.connect()) {
-                        		Toast.makeText(getActivity(), "Could not connect to " + ip + " via Wireless", Toast.LENGTH_SHORT).show();
+                        		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                        		builder.setMessage("Could not connect to " + ip).setTitle(R.string.error_alertdialog_title).setPositiveButton("Ok", new OnClickListener() {
+									
+									@Override
+									public void onClick(DialogInterface dialog, int which) {
+										dialog.cancel();
+									}
+								});
+                        		AlertDialog dialog = builder.create();
+                        		dialog.show();
                         	}
+                        	
+                        	//SystemClock.sleep(1000);
+                        	//_btnConnectWireless.setEnabled(true);
                         }
                     }    
                 };
@@ -181,8 +205,22 @@ public class SettingsFragment extends Fragment {
 				
 				_cHandler.setConnectionType(ConnectionType.BLUETOOTH);
 				_cHandler.setMac(item.getAddress());
+				
+				Toast.makeText(getActivity(), R.string.connecting, Toast.LENGTH_LONG).show();
+				SystemClock.sleep(1000);
+				
 				if (!_cHandler.connect()) {
-					Toast.makeText(getActivity(), "Could not connect to " + item.getAddress() + " via Bluetooth", Toast.LENGTH_SHORT).show();
+            		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            		builder.setMessage("Could not connect to " + item.getAddress()).setTitle(R.string.error_alertdialog_title).setPositiveButton("Ok", new OnClickListener() {
+						
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							dialog.cancel();
+							
+						}
+					});
+            		AlertDialog dialog = builder.create();
+            		dialog.show();
 				}
 			}
 		});

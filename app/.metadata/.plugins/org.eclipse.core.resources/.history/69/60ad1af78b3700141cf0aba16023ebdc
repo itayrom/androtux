@@ -1,0 +1,156 @@
+/*
+**  Android Remote for Tux (AndroTux) 
+**  Copyright (C) 2014 Itay Rom <1t4yr0m@gmail.com> Tal Sabo <tal.sabo@gmail.com> 
+**
+**  This program is free software: you can redistribute it and/or modify
+**  it under the terms of the GNU General Public License as published by
+**  the Free Software Foundation, either version 3 of the License, or
+**  (at your option) any later version.
+**
+**  This program is distributed in the hope that it will be useful,
+**  but WITHOUT ANY WARRANTY; without even the implied warranty of
+**  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**  GNU General Public License for more details.
+**
+**  You should have received a copy of the GNU General Public License
+**  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+package com.androtux;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import android.content.Context;
+import android.content.res.TypedArray;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Paint.Align;
+import android.graphics.Paint.Style;
+import android.graphics.Rect;
+import android.graphics.RectF;
+import android.util.AttributeSet;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.Button;
+
+public class TouchButton extends AbstractKey {
+	private Paint _paint;
+	private String _text;
+	private int _keyColor;
+	private int _growFactor;
+	private RectF _rect;
+	private boolean _isEnabled;
+	
+	private List<Runnable> _ops;
+	
+	public TouchButton(Context context) {
+		super(context);
+		init();
+	}
+	
+	public TouchButton(Context context, AttributeSet attrs) {
+		super(context, attrs);
+		init(attrs);
+	}
+	
+	public TouchButton(Context context, AttributeSet attrs, int defStyle) {
+		super(context, attrs, defStyle);
+		init(attrs);
+	}
+	
+	private void init() {
+		_ops = new ArrayList<Runnable>();
+		_paint = new Paint();
+		setReleasedParams();
+	}
+	
+	private void init(AttributeSet attrs) {
+		init();
+		TypedArray a=getContext().obtainStyledAttributes(attrs, R.styleable.TouchKey);
+		_text = a.getString(R.styleable.TouchKey_android_text);
+		//_isEnabled = a.getBoolean(R.styleable.TouchButton_android_enabled, true);
+		
+		a.recycle();
+	}
+	
+	@Override
+	public void drawKey(Canvas canvas) {
+		if (_isEnabled) {
+			_rect = new RectF(2, 2, getWidth()-2, getHeight()-2);
+			_paint.setStyle(Style.FILL_AND_STROKE);
+			
+			_paint.setColor(Color.GRAY);
+			canvas.drawRoundRect(_rect, 10, 10, _paint);
+			
+			_paint.setColor(_keyColor);
+			_rect = new RectF(5 - _growFactor, 5 - _growFactor, getWidth()-(5 - _growFactor), getHeight()-(5 - _growFactor));
+			canvas.drawRoundRect(_rect, 10, 10, _paint);
+			
+			_paint.setColor(Color.BLACK);
+			_paint.setTextAlign(Align.CENTER);
+			_paint.setTextSize(18 + _growFactor);
+			canvas.drawText(_text, getWidth()/2, getHeight()/2 + 7, _paint);
+		} else {
+			_rect = new RectF(2, 2, getWidth()-2, getHeight()-2);
+			_paint.setStyle(Style.FILL_AND_STROKE);
+			
+			_paint.setColor(Color.GRAY);
+			canvas.drawRoundRect(_rect, 10, 10, _paint);
+			
+			_paint.setColor(Color.GRAY);
+			_rect = new RectF(5, 5, getWidth()-5, getHeight()-5);
+			canvas.drawRoundRect(_rect, 10, 10, _paint);
+			
+			_paint.setColor(Color.BLACK);
+			_paint.setTextAlign(Align.CENTER);
+			_paint.setTextSize(18 );
+			canvas.drawText(_text, getWidth()/2, getHeight()/2 + 7, _paint);
+		}
+	}
+	
+	private void run() {
+		for (Runnable current : _ops) {
+			current.run();
+		}
+	}
+	
+	public void addOps(Runnable op) {
+		_ops.add(op);
+	}
+
+	@Override
+	public void setReleasedParams() {
+		_keyColor = Color.parseColor("#2bcbf3");
+		_growFactor = 0;
+	}
+
+	@Override
+	public void setPressedParams() {
+		_keyColor = Color.YELLOW;
+		_growFactor = 3;
+	}
+
+	@Override
+	public void onRelease() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onPress() {
+		if (_isEnabled)
+			run();
+	}
+	
+	public void setEnabled(boolean e) {
+		_isEnabled = e;
+		this.invalidate();
+	}
+	
+	public boolean getEnabled() {
+		return _isEnabled;
+	}
+
+}

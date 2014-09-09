@@ -18,53 +18,86 @@
 
 package com.androtux;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 public class TabBarFragment extends Fragment {
+	private CommunicationHandler _cHandler;
+	private AlertDialog.Builder _builder;
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 	        Bundle savedInstanceState) {
 	    View rootView = inflater.inflate(R.layout.fragment_tabbar, container, false);
 	    
+	    _cHandler = CommunicationHandler.getInstance();
+	    
+	    _builder = new AlertDialog.Builder(getActivity());
+	    _builder.setMessage(R.string.must_connect_first_msg).setTitle(R.string.error_alertdialog_title).setPositiveButton("Ok", new OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.cancel();
+				
+			}
+		});
+	    
 	    ToggleButton tbKeyboard = (ToggleButton)rootView.findViewById(R.id.tbKeyboard);
 	    ToggleButton tbMouse = (ToggleButton)rootView.findViewById(R.id.tbMouse);
 	    ToggleButton tbGamepad = (ToggleButton)rootView.findViewById(R.id.tbGamepad);
-	    ToggleButton tbSettings = (ToggleButton)rootView.findViewById(R.id.tbSettings);
+	    final ToggleButton tbSettings = (ToggleButton)rootView.findViewById(R.id.tbSettings);
 	    ToggleButton tbAbout = (ToggleButton)rootView.findViewById(R.id.tbAbout);
 
 	    
 	    tbKeyboard.addOps(new Runnable() {
 			@Override
 			public void run() {
-				FragmentTransaction transaction = getFragmentManager().beginTransaction();
-				transaction.replace(R.id.item_fragment, new KeyboardFragment());
-				transaction.addToBackStack(null);
-				transaction.commit();
+					if (_cHandler.isConnected()) {
+						FragmentTransaction transaction = getFragmentManager().beginTransaction();
+						transaction.replace(R.id.item_fragment, new KeyboardFragment());
+						transaction.addToBackStack(null);
+						transaction.commit();
+					} else {
+						_builder.show();
+						tbSettings.setOn();
+					}
 			}
 		});
 	    
 	    tbMouse.addOps(new Runnable() {
 			@Override
 			public void run() {
-				FragmentTransaction transaction = getFragmentManager().beginTransaction();
-				transaction.replace(R.id.item_fragment, new MouseFragment());
-				transaction.addToBackStack(null);
-				transaction.commit();
+				if (_cHandler.isConnected()) {
+					FragmentTransaction transaction = getFragmentManager().beginTransaction();
+					transaction.replace(R.id.item_fragment, new MouseFragment());
+					transaction.addToBackStack(null);
+					transaction.commit();
+				} else {
+					_builder.show();
+					tbSettings.setOn();
+				}
 			}
 		});
 	    
 	    tbGamepad.addOps(new Runnable() {
 			@Override
 			public void run() {
-				FragmentTransaction transaction = getFragmentManager().beginTransaction();
-				transaction.replace(R.id.item_fragment, new GamepadFragment());
-				transaction.addToBackStack(null);
-				transaction.commit();
+				if (_cHandler.isConnected()) {
+					FragmentTransaction transaction = getFragmentManager().beginTransaction();
+					transaction.replace(R.id.item_fragment, new GamepadFragment());
+					transaction.addToBackStack(null);
+					transaction.commit();
+				} else {
+					_builder.show();
+					tbSettings.setOn();
+				}
 			}
 		});
 	    
@@ -119,7 +152,7 @@ public class TabBarFragment extends Fragment {
 	    tbAbout.addListener(tbGamepad);
 	    tbAbout.addListener(tbSettings);
 
-	    tbKeyboard.setOn();
+	    tbSettings.setOn();
 	    
 	    return rootView;
 	}

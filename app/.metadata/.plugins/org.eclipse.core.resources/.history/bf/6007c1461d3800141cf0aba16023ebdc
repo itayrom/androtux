@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">AndroTux</string>
+    <string name="action_settings">Settings</string>
+    
+    <string name="error_alertdialog_title">Warning</string>
+    <string name="must_connect_first_msg">You must connect to an AndroTux server first!</string>
+    <string name="connecting">Connecting</string>
+    
+    <string name="about_app_name">Android Remote for Tux(AndroTux)</string>
+    <string name="about_app_version">Version: 1.0</string>
+    <string name="about_app_by">Created by:</string>
+    <string name="about_app_itay">Itay Rom (1t4yr0m@gmail.com)</string>
+    <string name="about_join">Join the project:</string>
+    <string name="about_link">https://code.google.com/p/androtux/</string>
+
+</resources>

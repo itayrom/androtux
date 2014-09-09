@@ -1,0 +1,340 @@
+/*
+**  Android Remote for Tux (AndroTux) 
+**  Copyright (C) 2014 Itay Rom <1t4yr0m@gmail.com> Tal Sabo <tal.sabo@gmail.com> 
+**
+**  This program is free software: you can redistribute it and/or modify
+**  it under the terms of the GNU General Public License as published by
+**  the Free Software Foundation, either version 3 of the License, or
+**  (at your option) any later version.
+**
+**  This program is distributed in the hope that it will be useful,
+**  but WITHOUT ANY WARRANTY; without even the implied warranty of
+**  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**  GNU General Public License for more details.
+**
+**  You should have received a copy of the GNU General Public License
+**  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+package com.androtux;
+
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.net.UnknownHostException;
+import java.util.UUID;
+
+import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothSocket;
+import android.bluetooth.BluetoothDevice;
+import android.content.Intent;
+import android.os.SystemClock;
+
+public class CommunicationHandler {
+	private static final int REQUEST_ENABLE_BT = 1;
+	//private final UUID APPUUID = UUID.fromString("7335b5f2-ec43-4e53-8419-07657a9a8d52");
+	private final UUID APPUUID = UUID.fromString("07293db4-a323-4e07-8b8b-250b340e42a4");
+	
+	private static CommunicationHandler _handler = null;
+	
+	private InetAddress _serverAddr;
+	private String _ip;
+	private String _mac;
+	private int _port;
+	private Socket _socket;
+	private BluetoothSocket _btSocket;
+	private BluetoothAdapter _btAdapter;
+	private BluetoothDevice _btDevice;
+	private ConnectionType _connectionType;
+	private Activity _activity;
+	private Thread _btThread, _wirelessThread;
+	
+	private SyncBoolean _lock;
+	
+	private boolean _isBluetooth;
+	
+	private CommunicationHandler() {
+		_lock = new SyncBoolean(false);
+		_isBluetooth = true;
+		_connectionType = ConnectionType.NONE;
+	}
+	
+	public static CommunicationHandler getInstance() {
+		if (_handler == null) {
+			_handler = new CommunicationHandler();
+		}
+		
+		return _handler;
+	}
+	
+	public void initialize() {
+		// We check here to see if the device actually have bluetooth capabilities.
+		_btAdapter = BluetoothAdapter.getDefaultAdapter();
+		if (_btAdapter == null) {
+			setIsBluetooth(false);
+		} else {
+			setIsBluetooth(true);
+		    setBluetoothAdapter(_btAdapter);
+		}
+	}
+	
+	public boolean connect() {
+		// We don't want to make a new connection before closing the previous one, of course.
+		disconnect();
+		
+		// There are better ways to do this, but we need to let the server finish disconnecting prior to making a new connection.
+		// The reason is that if the operations are made too close in time, the server might create a new connection before closing the previous one,
+		// creating a new Androtux(i+1) controller instead of replacing the Androtux(i) one.
+		SystemClock.sleep(1000);
+		
+		_lock.setVal(true);
+		
+		switch (_connectionType) {
+		case WIRELESS:
+			try {
+				_serverAddr = InetAddress.getByName(_ip);
+				WirelessThread t = new WirelessThread(_lock);
+				_wirelessThread = new Thread(t);
+				_wirelessThread.start();
+				
+				synchronized (_lock) {
+					_lock.wait();
+					_lock.setVal(false);
+				}
+			} catch (UnknownHostException e) {
+				e.printStackTrace();
+				return false;
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			break;
+		case BLUETOOTH:
+			if (!getIsBluetooth())
+				return false;
+			
+			if (!_btAdapter.isEnabled()) {
+			    Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+			    _activity.startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+			}
+			
+			BluetoothThread t = new BluetoothThread(_lock);
+			_btThread = new Thread(t);
+			_btThread.start();
+			
+			synchronized (_lock) {
+				try {
+					_lock.wait();
+					_lock.setVal(false);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+			
+			break;
+		case NONE:
+			return false;
+		}
+		
+		return true;
+	}
+	
+	public boolean disconnect() {
+		if (_socket != null) {
+			try {
+				_socket.close();
+				while (_socket.isConnected() && !_socket.isClosed()) { }
+				_socket = null;
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		if (_btSocket != null) {
+			try {
+				_btSocket.close();
+				_btSocket = null;
+			} catch (IOException e) {
+				e.printStackTrace();
+			} 
+		}
+		
+		return true;
+	}
+	
+	public boolean sendData(String str) {
+		switch (_connectionType) {
+		case WIRELESS:
+			try {
+				PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(_socket.getOutputStream())), true);
+		        out.println(str);
+		        out.flush();
+	        } catch (IOException e) {
+	            e.printStackTrace();
+	            return false;
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	            return false;
+	        }
+			break;
+		case BLUETOOTH:
+			try {
+				OutputStream out = _btSocket.getOutputStream();
+				byte[] msg = (str + " ").getBytes();
+				msg[msg.length - 1] = 0;
+				out.write(msg);
+				out.flush();
+			} catch (IOException e) {
+	            e.printStackTrace();
+	            return false;
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	            return false;
+	        }
+			break;
+		case NONE:
+			return false;
+		}
+		
+		return true;
+	}
+	
+	// setters/getters
+	
+	public void setConnectionType(ConnectionType type) {
+		_connectionType = type;
+	}
+	
+	public ConnectionType getConnectionType() {
+		return _connectionType;
+	}
+	
+	public void setIp(String ip) {
+		_ip = ip;
+	}
+	
+	public String getIp() {
+		return _ip;
+	}
+	
+	public void setPort(int port) {
+		_port = port;
+	}
+	
+	public int getPort() {
+		return _port;
+	}
+	
+	public void setMac(String mac) {
+		_mac = mac;
+	}
+	
+	public String getMac() {
+		return _mac;
+	}
+	
+	public void setBluetoothAdapter(BluetoothAdapter adapter) {
+		_btAdapter = adapter;
+	}
+	
+	public BluetoothAdapter getBluetoohAdapter() {
+		return _btAdapter;
+	}
+	
+	public void setIsBluetooth(boolean isBt) {
+		_isBluetooth = isBt;
+	}
+	
+	public boolean getIsBluetooth() {
+		return _isBluetooth;
+	}
+	
+	public void setActivity(Activity activity) {
+		_activity = activity;
+	}
+	
+	public boolean isConnected() {
+		boolean result;
+		result = ((_socket != null) ? _socket.isConnected() : false) || ((_btSocket != null) ? _btSocket.isConnected() : false);
+		return result;
+	}
+	// <<-- end of setters/getters
+	
+	class WirelessThread implements Runnable {
+		private SyncBoolean _lock;
+		
+		public WirelessThread(SyncBoolean lock) {
+			_lock = lock;
+		}
+		
+	    @Override
+	    public void run() {
+    		try {
+ 	           //_socket = new Socket(_serverAddr, _port);
+ 	        	_socket = new Socket();
+ 	        	_socket.connect(new InetSocketAddress(_serverAddr, _port));
+ 	        	
+ 	        	synchronized (_lock) {
+ 	        		//while (_lock.getVal()) {
+ 	        			try {
+							_lock.wait(1000);
+							_lock.notifyAll();
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+ 	        		//}
+ 				}
+ 	        	//while (!_socket.isConnected()) { }
+ 	        } catch (UnknownHostException e1) {
+ 	            e1.printStackTrace();
+ 	        } catch (IOException e1) {
+ 	            e1.printStackTrace();
+ 	        }
+	    }
+	}
+	
+	class BluetoothThread implements Runnable {
+		private SyncBoolean _lock;
+		
+		public BluetoothThread(SyncBoolean lock) {
+			_lock = lock;
+		}
+		
+		@Override
+		public void run() {
+			try {
+	        	_btDevice = _btAdapter.getRemoteDevice(_mac);
+	        	_btSocket = _btDevice.createInsecureRfcommSocketToServiceRecord(APPUUID);
+	        	_btAdapter.cancelDiscovery();
+	            _btSocket.connect();
+	            
+	            synchronized (_lock) {
+ 	        		//while (_lock.getVal()) {
+	            		try {
+							_lock.wait(1000);
+							_lock.notifyAll();
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+ 	        		//}
+ 				}
+	        } catch (IOException e0) {
+	            // Unable to connect; close the socket and get out
+	            try {
+	            	_btSocket.close();
+	            } catch (IOException e1) {
+	            	e1.printStackTrace();
+	            }
+	        }
+		}
+	}
+}
+
