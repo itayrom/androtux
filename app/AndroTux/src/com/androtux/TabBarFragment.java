@@ -56,7 +56,7 @@ public class TabBarFragment extends Fragment {
 	    ToggleButton tbAbout = (ToggleButton)rootView.findViewById(R.id.tbAbout);
 
 	    
-	    tbKeyboard.addOps(new Runnable() {
+	    tbKeyboard.addOnOps(new Runnable() {
 			@Override
 			public void run() {
 					if (_cHandler.isConnected()) {
@@ -71,7 +71,7 @@ public class TabBarFragment extends Fragment {
 			}
 		});
 	    
-	    tbMouse.addOps(new Runnable() {
+	    tbMouse.addOnOps(new Runnable() {
 			@Override
 			public void run() {
 				if (_cHandler.isConnected()) {
@@ -86,7 +86,7 @@ public class TabBarFragment extends Fragment {
 			}
 		});
 	    
-	    tbGamepad.addOps(new Runnable() {
+	    tbGamepad.addOnOps(new Runnable() {
 			@Override
 			public void run() {
 				if (_cHandler.isConnected()) {
@@ -101,7 +101,7 @@ public class TabBarFragment extends Fragment {
 			}
 		});
 	    
-	    tbSettings.addOps(new Runnable() {
+	    tbSettings.addOnOps(new Runnable() {
 			@Override
 			public void run() {
 				FragmentTransaction transaction = getFragmentManager().beginTransaction();
@@ -111,7 +111,7 @@ public class TabBarFragment extends Fragment {
 			}
 		});
 	    
-	    tbAbout.addOps(new Runnable() {
+	    tbAbout.addOnOps(new Runnable() {
 			@Override
 			public void run() {
 				FragmentTransaction transaction = getFragmentManager().beginTransaction();

@@ -1,0 +1,197 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res/com.androtux"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#505050"
+    android:baselineAligned="false"
+    android:orientation="vertical">
+    
+    <LinearLayout
+        android:layout_weight="0.15"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        
+        <com.androtux.ToggleButton
+        android:id="@+id/tbWheel"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        app:offColor="#ff0000"
+        app:onColor="#00ff00" />
+        
+    </LinearLayout>
+    
+    <LinearLayout
+        android:layout_weight="0.70"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        
+	        <LinearLayout
+	        android:layout_weight="0.30"
+	        android:layout_width="0dp"
+	        android:layout_height="wrap_content"
+	        android:orientation="horizontal">
+        
+		        <com.androtux.TouchJoystick
+		        android:id="@+id/touchJoystick1"
+		        android:layout_width="200dp"
+		        android:layout_height="200dp" />
+		        
+	        </LinearLayout>
+	        
+	        <LinearLayout
+	        android:layout_weight="0.20"
+	        android:layout_width="0dp"
+	        android:layout_height="wrap_content"
+	        android:orientation="horizontal">
+		        
+	            <com.androtux.TouchKey
+			        android:id="@+id/touchKey1"
+			        android:layout_width="50dp"
+			        android:layout_height="25dp"
+			        android:layout_marginRight="16dp"
+			        android:text="Start"
+			        app:keycode="315"
+			        app:keytype="g" />
+	            
+	             <com.androtux.TouchKey
+			        android:id="@+id/touchKey2"
+			        android:layout_width="50dp"
+			        android:layout_height="25dp"
+			        android:layout_marginRight="16dp"
+			        android:text="Select"
+			        app:keycode="314"
+			        app:keytype="g" />
+		        
+            </LinearLayout>
+            
+	        <LinearLayout
+	        android:layout_weight="0.50"
+	        android:layout_width="0dp"
+	        android:layout_height="wrap_content"
+	        android:orientation="horizontal">
+		        
+            </LinearLayout>
+        
+    </LinearLayout>
+    
+    <LinearLayout
+        android:layout_weight="0.15"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        
+    </LinearLayout>
+</LinearLayout>
+<!--
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res/com.androtux"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#505050" >
+
+    <com.androtux.TouchKey
+        android:id="@+id/touchKey2"
+        android:layout_width="50dp"
+        android:layout_height="25dp"
+        android:layout_alignTop="@+id/touchKey1"
+        android:layout_marginRight="16dp"
+        android:layout_toLeftOf="@+id/touchKey1"
+        android:text="Select"
+        app:keycode="314"
+        app:keytype="g" />
+
+    <com.androtux.TouchJoystick
+        android:id="@+id/touchJoystick1"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="15dp"/>
+
+    <com.androtux.GamepadTouchKey
+        android:id="@+id/gamepadX"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:layout_alignTop="@+id/gamepadY"
+        android:layout_toLeftOf="@+id/gamepadY"
+        android:text="Y"
+        app:color="#0000ff"
+        app:keycode="137"
+        app:keytype="g" />
+
+    <com.androtux.GamepadTouchKey
+        android:id="@+id/GamepadB"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:layout_below="@+id/gamepadY"
+        android:layout_toRightOf="@+id/gamepadX"
+        android:text="B"
+        app:color="#ffff00"
+        app:keycode="305"
+        app:keytype="g" />
+
+    <com.androtux.GamepadTouchKey
+        android:id="@+id/GamepadA"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:layout_alignTop="@+id/GamepadB"
+        android:layout_toLeftOf="@+id/GamepadB"
+        android:text="A"
+        app:color="#ff0000"
+        app:keycode="304"
+        app:keytype="g" />
+
+    <com.androtux.TouchKey
+        android:id="@+id/touchKey1"
+        android:layout_width="50dp"
+        android:layout_height="25dp"
+        android:layout_alignBottom="@+id/touchJoystick1"
+        android:layout_marginRight="16dp"
+        android:layout_toLeftOf="@+id/GamepadA"
+        android:text="Start"
+        app:keycode="315"
+        app:keytype="g" />
+
+    <com.androtux.TouchKey
+        android:id="@+id/TouchKey01"
+        android:layout_width="60dp"
+        android:layout_height="30dp"
+        android:layout_alignTop="@+id/GamepadLeft"
+        android:layout_toRightOf="@+id/touchKey1"
+        android:text="Left"
+        app:keycode="310"
+        app:keytype="g" />
+
+    <com.androtux.TouchKey
+        android:id="@+id/GamepadLeft"
+        android:layout_width="60dp"
+        android:layout_height="30dp"
+        android:layout_alignRight="@+id/gamepadY"
+        android:layout_alignTop="@+id/touchJoystick1"
+        android:text="Right"
+        app:keycode="311"
+        app:keytype="g" />
+
+    <com.androtux.GamepadTouchKey
+        android:id="@+id/gamepadY"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/GamepadLeft"
+        android:layout_marginRight="18dp"
+        android:text="X"
+        app:keycode="138"
+        app:keytype="g"
+        app:color="#00ff00" />
+
+    <com.androtux.WheelToggleButton
+        android:id="@+id/wheelToggleButton1"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignRight="@+id/touchKey2"
+        android:layout_marginTop="36dp" />
+ 
+</RelativeLayout>
+-->

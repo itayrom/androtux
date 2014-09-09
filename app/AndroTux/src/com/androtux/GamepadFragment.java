@@ -19,6 +19,7 @@
 package com.androtux;
 
 import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,6 +33,25 @@ public class GamepadFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 	        Bundle savedInstanceState) {
 	    View rootView = inflater.inflate(R.layout.fragment_gamepad, container, false);
+	    /*
+	    ToggleButton tbWheel = (ToggleButton)rootView.findViewById(R.id.tbWheel);
+	    tbWheel.setImage(R.drawable.wheel);
+	    
+	    tbWheel.addOnOps(new Runnable() {
+			@Override
+			public void run() {
+				MainActivity.setAxis(true);
+			}
+		});
+	    
+	    tbWheel.addOffOps(new Runnable() {
+			@Override
+			public void run() {
+				MainActivity.setAxis(false);
+				CommunicationHandler.getInstance().sendData("a0,0");
+			}
+		});
+	    */
 	    return rootView;
 	}
 }

@@ -4,3 +4,6 @@
 1410264298905	Delete element
 1410264306182	Delete element
 1410264351635	Rename resource 'AndroTux.png'
+1410269240555	Rename field '_ops'
+1410269295199	Rename method 'run'
+1410269408806	Rename method 'addOps'

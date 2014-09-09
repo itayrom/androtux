@@ -29,6 +29,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -37,11 +38,12 @@ public class ToggleButton extends View implements IToggleable {
 	private Paint _paint;
 	private boolean _pressed;
 	private Bitmap _icon;
-	private Rect _rect;
+	private RectF _rect;
 	private int _bgColor, _onColor, _offColor;
 	private boolean _isTab;
 	
-	private List<Runnable> _ops;
+	private List<Runnable> _onOps;
+	private List<Runnable> _offOps;
 	private List<IToggleable> _listeners;
 	
 	public ToggleButton(Context context) {
@@ -60,7 +62,8 @@ public class ToggleButton extends View implements IToggleable {
 	}
 	
 	protected void init() {
-		_ops = new ArrayList<Runnable>();
+		_onOps = new ArrayList<Runnable>();
+		_offOps = new ArrayList<Runnable>();
 		_listeners = new ArrayList<IToggleable>();
 		_paint = new Paint();
 		_pressed = false;
@@ -73,6 +76,7 @@ public class ToggleButton extends View implements IToggleable {
 		_offColor = a.getColor(R.styleable.ToggleButton_offColor, Color.RED);
 		_onColor = a.getColor(R.styleable.ToggleButton_onColor, Color.GREEN);
 		_isTab = a.getBoolean(R.styleable.ToggleButton_isTab, false);
+		
 		a.recycle();
 		init();
 	}
@@ -100,14 +104,24 @@ public class ToggleButton extends View implements IToggleable {
 		return true;
 	}
 	
-	private void run() {
-		for (Runnable current : _ops) {
+	private void runOn() {
+		for (Runnable current : _onOps) {
 			current.run();
 		}
 	}
 	
-	public void addOps(Runnable op) {
-		_ops.add(op);
+	private void runOff() {
+		for (Runnable current : _offOps) {
+			current.run();
+		}
+	}
+	
+	public void addOnOps(Runnable op) {
+		_onOps.add(op);
+	}
+	
+	public void addOffOps(Runnable op) {
+		_offOps.add(op);
 	}
 	
 	public void addListener(IToggleable listener) {
@@ -120,9 +134,9 @@ public class ToggleButton extends View implements IToggleable {
 	
 	@Override
 	protected void onDraw(Canvas canvas) {
-		_rect = new Rect(5, 5, getWidth()-5, getHeight()-5);
+		_rect = new RectF(5, 5, getWidth()- 5, getHeight() - 5);
 		_paint.setColor(_bgColor);
-		canvas.drawRect(0, 0, getWidth(), getHeight(), _paint);
+		canvas.drawRoundRect(_rect, 15, 15, _paint);
 		canvas.drawBitmap(_icon, null, _rect, null);
 	}
 	
@@ -144,7 +158,7 @@ public class ToggleButton extends View implements IToggleable {
 			current.setOff();
 		}
 		
-		run();
+		runOn();
 	}
 
 	@Override
@@ -152,5 +166,7 @@ public class ToggleButton extends View implements IToggleable {
 		_pressed = false;
 		setOffParams();
 		invalidate();
+		
+		runOff();
 	}
 }
