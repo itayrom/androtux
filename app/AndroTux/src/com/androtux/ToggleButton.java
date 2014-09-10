@@ -104,6 +104,15 @@ public class ToggleButton extends View implements IToggleable {
 		return true;
 	}
 	
+	@Override
+	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+		/*int width = MeasureSpec.getSize(widthMeasureSpec);
+		int height = width * _icon.getHeight() / _icon.getWidth();*/
+		int height = MeasureSpec.getSize(heightMeasureSpec);
+		int width = height * _icon.getWidth() / _icon.getHeight();
+		setMeasuredDimension(width, height);
+	}
+	
 	private void runOn() {
 		for (Runnable current : _onOps) {
 			current.run();

@@ -45,7 +45,6 @@ public abstract class AbstractKey extends View {
 	
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-		String str;
     	int action = event.getActionMasked();
     	
     	switch(action) {

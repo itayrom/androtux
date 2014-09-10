@@ -25,7 +25,7 @@ theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
          */
-        public static final int enabled=0x7f010006;
+        public static final int enabled=0x7f010007;
         /** <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
 <p>This may also be a reference to a resource (in the form
 "<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
@@ -33,7 +33,7 @@ theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
          */
-        public static final int isTab=0x7f010005;
+        public static final int isTab=0x7f010006;
         /** <p>Must be a string value, using '\\;' to escape characters such as '\\n' or '\\uxxxx' for a unicode character.
 <p>This may also be a reference to a resource (in the form
 "<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
@@ -58,7 +58,7 @@ theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
          */
-        public static final int offColor=0x7f010004;
+        public static final int offColor=0x7f010005;
         /** <p>Must be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
 "<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
 <p>This may also be a reference to a resource (in the form
@@ -67,7 +67,15 @@ theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
          */
-        public static final int onColor=0x7f010003;
+        public static final int onColor=0x7f010004;
+        /** <p>Must be a floating point value, such as "<code>1.2</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int rotation=0x7f010003;
     }
     public static final class dimen {
         /**  Default screen margins, per the Android Design guidelines. 
@@ -91,24 +99,33 @@ containing a value of this type.
         public static final int wheel=0x7f020007;
     }
     public static final class id {
-        public static final int GamepadA=0x7f08000e;
-        public static final int GamepadB=0x7f08000d;
-        public static final int GamepadLeft=0x7f08000f;
-        public static final int TouchKey01=0x7f080010;
-        public static final int action_settings=0x7f08001f;
-        public static final int btnConnectWireless=0x7f080018;
-        public static final int gamepadX=0x7f08000b;
-        public static final int gamepadY=0x7f08000c;
-        public static final int imageButton1=0x7f080015;
+        public static final int TouchKey01=0x7f08001c;
+        public static final int action_settings=0x7f080026;
+        public static final int btnConnectWireless=0x7f08001f;
+        public static final int gp_btnA=0x7f080012;
+        public static final int gp_btnB=0x7f080010;
+        public static final int gp_btnC=0x7f080014;
+        public static final int gp_btnLeft=0x7f08000c;
+        public static final int gp_btnLeft2=0x7f08000b;
+        public static final int gp_btnMode=0x7f080018;
+        public static final int gp_btnRight=0x7f08000d;
+        public static final int gp_btnRight2=0x7f08000e;
+        public static final int gp_btnSelect=0x7f080017;
+        public static final int gp_btnStart=0x7f080016;
+        public static final int gp_btnX=0x7f080011;
+        public static final int gp_btnY=0x7f080013;
+        public static final int gp_btnZ=0x7f080015;
+        public static final int gp_tbWheel=0x7f08000a;
+        public static final int imageButton1=0x7f08001b;
         public static final int imageView1=0x7f080003;
         public static final int item_fragment=0x7f080001;
-        public static final int lvPaired=0x7f080016;
+        public static final int lvPaired=0x7f08001d;
         public static final int tabbar_fragment=0x7f080000;
-        public static final int tbAbout=0x7f08001d;
-        public static final int tbGamepad=0x7f08001b;
-        public static final int tbKeyboard=0x7f080019;
-        public static final int tbMouse=0x7f08001a;
-        public static final int tbSettings=0x7f08001c;
+        public static final int tbAbout=0x7f080024;
+        public static final int tbGamepad=0x7f080022;
+        public static final int tbKeyboard=0x7f080020;
+        public static final int tbMouse=0x7f080021;
+        public static final int tbSettings=0x7f080023;
         public static final int textView1=0x7f080004;
         public static final int textView2=0x7f080002;
         public static final int textView3=0x7f080007;
@@ -116,13 +133,11 @@ containing a value of this type.
         public static final int textView5=0x7f080005;
         public static final int textView6=0x7f080006;
         public static final int textView7=0x7f080008;
-        public static final int textViewItem=0x7f08001e;
-        public static final int touchJoystick1=0x7f08000a;
-        public static final int touchKey1=0x7f080012;
-        public static final int touchKey2=0x7f080013;
-        public static final int touchpad=0x7f080014;
-        public static final int txtWirelessIp=0x7f080017;
-        public static final int wheelToggleButton1=0x7f080011;
+        public static final int textViewItem=0x7f080025;
+        public static final int touchJoystick1=0x7f08000f;
+        public static final int touchKey1=0x7f08001a;
+        public static final int touchpad=0x7f080019;
+        public static final int txtWirelessIp=0x7f08001e;
     }
     public static final class layout {
         public static final int activity_main=0x7f030000;
@@ -197,7 +212,7 @@ containing a value of this type.
            @see #ToggleButton_onColor
          */
         public static final int[] ToggleButton = {
-            0x7f010003, 0x7f010004, 0x7f010005
+            0x7f010004, 0x7f010005, 0x7f010006
         };
         /**
           <p>This symbol is the offset where the {@link com.androtux.R.attr#isTab}
@@ -254,7 +269,7 @@ containing a value of this type.
            @see #TouchButton_enabled
          */
         public static final int[] TouchButton = {
-            0x7f010006
+            0x7f010007
         };
         /**
           <p>This symbol is the offset where the {@link com.androtux.R.attr#enabled}
@@ -280,14 +295,17 @@ containing a value of this type.
            <tr><td><code>{@link #TouchKey_color com.androtux:color}</code></td><td></td></tr>
            <tr><td><code>{@link #TouchKey_keycode com.androtux:keycode}</code></td><td></td></tr>
            <tr><td><code>{@link #TouchKey_keytype com.androtux:keytype}</code></td><td></td></tr>
+           <tr><td><code>{@link #TouchKey_rotation com.androtux:rotation}</code></td><td></td></tr>
            </table>
            @see #TouchKey_android_text
            @see #TouchKey_color
            @see #TouchKey_keycode
            @see #TouchKey_keytype
+           @see #TouchKey_rotation
          */
         public static final int[] TouchKey = {
-            0x0101014f, 0x7f010000, 0x7f010001, 0x7f010002
+            0x0101014f, 0x7f010000, 0x7f010001, 0x7f010002,
+            0x7f010003
         };
         /**
           <p>This symbol is the offset where the {@link android.R.attr#text}
@@ -338,5 +356,19 @@ containing a value of this type.
           @attr name com.androtux:keytype
         */
         public static final int TouchKey_keytype = 1;
+        /**
+          <p>This symbol is the offset where the {@link com.androtux.R.attr#rotation}
+          attribute's value can be found in the {@link #TouchKey} array.
+
+
+          <p>Must be a floating point value, such as "<code>1.2</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name com.androtux:rotation
+        */
+        public static final int TouchKey_rotation = 4;
     };
 }

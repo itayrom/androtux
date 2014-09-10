@@ -25,12 +25,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Paint.Style;
-import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
-import android.view.View;
-import android.widget.Button;
 
 public class TouchKey extends AbstractKey {
 	private String _keyType;
@@ -40,6 +36,9 @@ public class TouchKey extends AbstractKey {
 	private int _keyColor;
 	private int _growFactor;
 	private RectF _rect;
+	
+	private float _rotation;
+	private int _color;
 	
 	public TouchKey(Context context) {
 		super(context);
@@ -62,29 +61,30 @@ public class TouchKey extends AbstractKey {
 	}
 	
 	private void init(AttributeSet attrs) {
-		init();
 		TypedArray a=getContext().obtainStyledAttributes(attrs, R.styleable.TouchKey);
 		_text = a.getString(R.styleable.TouchKey_android_text);
 		setKeyType(a.getString(R.styleable.TouchKey_keytype));
 		setKeyCode(a.getString(R.styleable.TouchKey_keycode));
+		setColor(a.getColor(R.styleable.TouchKey_color, Color.parseColor("#2bcbf3")));
+		setRotation(a.getFloat(R.styleable.TouchKey_rotation, 0));
 		a.recycle();
+		init();
 	}
 	
 	@Override
 	public void drawKey(Canvas canvas) {
-		_rect = new RectF(2, 2, getWidth()-2, getHeight()-2);
+		canvas.rotate(getRotation(), getWidth()/2, getHeight()/2);
+		float b = (getRotation() / 3);
+		_rect = new RectF(2 + b, 2 + b, getWidth()-2 - b, getHeight()-2 - b);
 		_paint.setStyle(Style.FILL_AND_STROKE);
-		
-		/*_paint.setColor(Color.BLUE);
-		canvas.drawRect(0, 0, getWidth(), getHeight(), _paint);*/
 		
 		_paint.setColor(Color.GRAY);
 		canvas.drawRoundRect(_rect, 10, 10, _paint);
 		
 		_paint.setColor(_keyColor);
-		_rect = new RectF(5 - _growFactor, 5 - _growFactor, getWidth()-(5 - _growFactor), getHeight()-(5 - _growFactor));
+		_rect = new RectF(5 - _growFactor + b, 5 - _growFactor + b, getWidth()-(5 - _growFactor) - b, getHeight()-(5 - _growFactor) - b);
 		canvas.drawRoundRect(_rect, 10, 10, _paint);
-		//canvas.drawRect(5 - _growFactor, 5 - _growFactor, getWidth()-(5 - _growFactor), getHeight()-(5 - _growFactor), _paint);
+		canvas.rotate(-1 * getRotation(), getWidth()/2, getHeight()/2);
 		
 		_paint.setColor(Color.BLACK);
 		_paint.setTextAlign(Align.CENTER);
@@ -94,7 +94,7 @@ public class TouchKey extends AbstractKey {
 
 	@Override
 	public void setReleasedParams() {
-		_keyColor = Color.parseColor("#2bcbf3");
+		_keyColor = _color;
 		_growFactor = 0;
 	}
 
@@ -129,6 +129,22 @@ public class TouchKey extends AbstractKey {
 	
 	public String getKeyCode() {
 		return _keyCode;
+	}
+	
+	public void setColor(int c) {
+		_color = c;
+	}
+	
+	public int getColor() {
+		return _color;
+	}
+	
+	public void setRotation(float r) {
+		_rotation = r;
+	}
+	
+	public float getRotation() {
+		return _rotation;
 	}
 	// <-- end of setters/getters
 

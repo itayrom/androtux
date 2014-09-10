@@ -112,11 +112,6 @@ public class MainActivity extends FragmentActivity implements SensorEventListene
 		CommunicationHandler.getInstance().disconnect();
 	}
 	
-	/*@Override
-	public boolean onPrepareOptionsMenu(Menu menu) {
-		return false;
-	}*/
-	
 	public static void setAxis(boolean stat) {
 		_axis = stat;
 	}

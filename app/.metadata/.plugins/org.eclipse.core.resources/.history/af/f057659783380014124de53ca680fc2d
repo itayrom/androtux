@@ -1,0 +1,192 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res/com.androtux"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#707070"
+    android:orientation="vertical">
+    
+    <LinearLayout
+        android:layout_height="0dp"
+        android:layout_width="fill_parent"
+        android:layout_weight="0.25"
+        android:orientation="horizontal">
+        
+        <com.androtux.ToggleButton
+	        android:id="@+id/gp_tbWheel"
+	        android:layout_width="wrap_content"
+	        android:layout_height="match_parent"
+	        app:offColor="#ff0000"
+	        app:onColor="#00ff00" />
+        
+        <LinearLayout 
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="horizontal"
+            android:gravity="right">
+            
+            <com.androtux.TouchKey
+	        android:id="@+id/gp_btnLeft2"
+	        android:layout_width="75dp"
+	        android:layout_height="match_parent"
+	        android:text="Left2"
+	        app:keycode="312"
+	        app:keytype="g"
+	        app:rotation="0" />
+            
+            <com.androtux.TouchKey
+	        android:id="@+id/gp_btnLeft"
+	        android:layout_width="75dp"
+	        android:layout_height="match_parent"
+	        android:text="Left"
+	        app:keycode="310"
+	        app:keytype="g"
+	        app:rotation="0" />
+            
+            <com.androtux.TouchKey
+	        android:id="@+id/gp_btnRight"
+	        android:layout_width="75dp"
+	        android:layout_height="match_parent"
+	        android:text="Right"
+	        app:keycode="311"
+	        app:keytype="g"
+	        app:rotation="0" />
+            
+            <com.androtux.TouchKey
+	        android:id="@+id/gp_btnRight2"
+	        android:layout_width="75dp"
+	        android:layout_height="match_parent"
+	        android:text="Right 2"
+	        app:keycode="313"
+	        app:keytype="g"
+	        app:rotation="0" />
+            
+            
+        </LinearLayout>
+        
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.65" >
+
+        <com.androtux.TouchJoystick
+            android:id="@+id/touchJoystick1"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="15dp" />
+
+        <com.androtux.TouchKey
+            android:id="@+id/gp_btnB"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:text="B"
+            app:keycode="305"
+            app:keytype="g"
+            app:rotation="45"
+            app:color="#ff0000" />
+
+        <com.androtux.TouchKey
+            android:id="@+id/gp_btnX"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:layout_alignRight="@+id/gp_btnA"
+            android:layout_alignTop="@+id/gp_btnB"
+            android:layout_marginRight="41dp"
+            android:text="X"
+            app:keycode="307"
+            app:keytype="g"
+            app:rotation="45"
+            app:color="#0000ff" />
+
+        <com.androtux.TouchKey
+            android:id="@+id/gp_btnA"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:layout_alignBottom="@+id/touchJoystick1"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="16dp"
+            android:layout_marginRight="42dp"
+            android:text="A"
+            app:keycode="304"
+            app:keytype="g"
+            app:rotation="45"
+            app:color="#00ff00" />
+
+        <com.androtux.TouchKey
+            android:id="@+id/gp_btnY"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:layout_alignLeft="@+id/gp_btnA"
+            android:layout_alignTop="@+id/touchJoystick1"
+            android:layout_marginTop="14dp"
+            android:text="Y"
+            app:keycode="308"
+            app:keytype="g"
+            app:rotation="45"
+            app:color="#ffff00" />
+
+        <com.androtux.TouchKey
+            android:id="@+id/gp_btnC"
+            android:layout_width="75dp"
+            android:layout_height="45dp"
+            android:layout_above="@+id/gp_btnX"
+            android:layout_centerHorizontal="true"
+            android:text="C"
+            app:keycode="306"
+            app:keytype="g"
+            app:rotation="0" />
+
+        <com.androtux.TouchKey
+            android:id="@+id/gp_btnZ"
+            android:layout_width="75dp"
+            android:layout_height="45dp"
+            android:layout_alignLeft="@+id/gp_btnC"
+            android:layout_below="@+id/gp_btnC"
+            android:text="Z"
+            app:keycode="309"
+            app:keytype="g"
+            app:rotation="0" />
+
+    </RelativeLayout>
+    
+    <LinearLayout
+        android:layout_height="0dp"
+        android:layout_width="fill_parent"
+        android:layout_weight="0.15"
+        android:orientation="horizontal"
+        android:gravity="center">
+	    
+        <com.androtux.TouchKey
+	        android:id="@+id/gp_btnStart"
+	        android:layout_width="75dp"
+	        android:layout_height="match_parent"
+	        android:text="Start"
+	        app:keycode="315"
+	        app:keytype="g"
+	        app:rotation="0" />
+        
+        <com.androtux.TouchKey
+	        android:id="@+id/gp_btnSelect"
+	        android:layout_width="75dp"
+	        android:layout_height="match_parent"
+	        android:text="Select"
+	        app:keycode="314"
+	        app:keytype="g"
+	        app:rotation="0" />
+        
+        <com.androtux.TouchKey
+	        android:id="@+id/gp_btnMode"
+	        android:layout_width="75dp"
+	        android:layout_height="match_parent"
+	        android:text="Mode"
+	        app:keycode="316"
+	        app:keytype="g"
+	        app:rotation="0" />
+        
+    </LinearLayout>
+    
+</LinearLayout>
