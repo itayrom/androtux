@@ -1,0 +1,1 @@
+Android Remote For Tux, or AndroTux, is an open-source, wireless implementation of some of the computer's peripheral hardware on an Android device, specifically for Linux­ based systems.
