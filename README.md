@@ -1,0 +1,6 @@
+# AnodroTux
+'AndroTux' (Abbreviation for "Android Remote for Tux") is an open-source, wireless implementation of some of the computer's peripheral hardware(Currently- a keyboard, a touchpad, and a gamepad) on an Android device, specifically for Linux based systems.
+
+'AndroTux' was first created by Itay Rom <1t4yr0m@gmail.com> and Tal Sabo as their bachelor's degree graduation project, and was originally hosted on [Google Code](https://code.google.com/p/androtux/) before it became read-only.
+
+### I'm currently working on writing instructions and documentation, so be patient :)
